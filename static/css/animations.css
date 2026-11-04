@@ -1,0 +1,293 @@
+/**
+ * HackWithIndia × MCET — Frontend Animations System
+ * Features:
+ * 1. Scroll Reveal Animations (Sections, Headings, Cards, Graphics)
+ * 2. Parallax Effects (Background Grid, Floating Embers, 3D Mouse Parallax)
+ * 3. Text Splitting Animations (Word-by-word reveal with Screen Reader Accessibility)
+ * 4. Interactive Hero Orbital Graphic (3D Tilt, Orbiting Satellites, Star Breathing)
+ * 5. Smooth Scrolling (Offset-aware for 80px Sticky Navbar)
+ */
+
+/* ================= 5. SMOOTH SCROLLING & HEADER OFFSET ================= */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Offset all section anchors so they clear the 80px (h-20) sticky navbar */
+#hero,
+#about,
+#events,
+#team,
+#domains,
+#resources,
+#leaderboard,
+#games,
+#register,
+#pass,
+#rubric,
+#broadcast,
+#blog,
+#admin {
+    scroll-margin-top: 5.5rem; /* 88px */
+}
+
+
+
+/* Ensure main content sits above background canvas */
+header, main, footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* ================= 1. SCROLL REVEAL ANIMATIONS ================= */
+/* Section Reveal Initial State */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered Card Reveal Initial State */
+.reveal-on-scroll:not(.is-revealed) .stagger-card {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+}
+
+.stagger-card {
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed .stagger-card {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Scale & Fade Reveal for Graphics */
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-scale.is-revealed {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Subtle Heading Slide */
+.reveal-heading {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-heading.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= 3. TEXT SPLITTING ANIMATIONS ================= */
+/* Word-by-word reveal wrapper mask */
+.split-word-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+}
+
+.split-word-item {
+    display: inline-block;
+    transform: translateY(115%);
+    opacity: 0;
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease;
+    will-change: transform, opacity;
+}
+
+.split-word-item.word-revealed {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ================= 4. INTERACTIVE HERO ORBITAL GRAPHIC ================= */
+/* Interactive 3D Perspective Stage */
+.hero-orbital-stage {
+    position: relative;
+    perspective: 1100px;
+    transform-style: preserve-3d;
+    cursor: grab;
+    will-change: transform;
+}
+
+.hero-orbital-stage:active {
+    cursor: grabbing;
+}
+
+/* 3D Parallax Tilt Container */
+.hero-orbital-card {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    aspect-square: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+}
+
+/* Gentle Idle Breathing & Floating Motion */
+.hero-orbital-float {
+    animation: heroFloat 6.5s ease-in-out infinite;
+    transform-style: preserve-3d;
+}
+
+@keyframes heroFloat {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-9px) rotate(1deg);
+    }
+}
+
+/* Center Asterisk/Star 3D Dynamic Breathing */
+.hero-star-dynamic {
+    transform-origin: center center;
+    transform-style: preserve-3d;
+    animation: heroStarBreathe 8s ease-in-out infinite;
+    filter: drop-shadow(0 0 18px rgba(255, 42, 42, 0.5));
+    transition: filter 0.35s ease, transform 0.35s ease;
+}
+
+.hero-orbital-stage:hover .hero-star-dynamic {
+    filter: drop-shadow(0 0 32px rgba(255, 42, 42, 0.85));
+}
+
+@keyframes heroStarBreathe {
+    0%, 100% {
+        transform: rotate(0deg) scale(1) translateZ(35px);
+    }
+    50% {
+        transform: rotate(4.5deg) scale(1.04) translateZ(42px);
+    }
+}
+
+/* Orbital Wireframe Depth Layer */
+.hero-wireframe-layer {
+    transform: translateZ(12px);
+    transition: transform 0.3s ease;
+}
+
+/* Satellites travelling along the orbits */
+.orbital-satellite {
+    filter: drop-shadow(0 0 10px #FF2A2A);
+}
+
+/* Ambient Radial Glow Aura behind Star */
+.hero-orbital-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(0);
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(255, 42, 42, 0.22) 0%, rgba(255, 42, 42, 0.06) 50%, transparent 72%);
+    pointer-events: none;
+    z-index: 0;
+    animation: heroGlowPulse 5.5s ease-in-out infinite;
+}
+
+@keyframes heroGlowPulse {
+    0%, 100% {
+        opacity: 0.65;
+        transform: translate(-50%, -50%) scale(0.94);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+/* Interactive Cursor Spotlight Flare */
+.hero-pointer-glow {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 42, 42, 0.28) 0%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    mix-blend-mode: screen;
+    z-index: 2;
+}
+
+.hero-orbital-stage:hover .hero-pointer-glow {
+    opacity: 1;
+}
+
+/* ================= REDUCED MOTION ACCESSIBILITY ================= */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto !important;
+    }
+    .reveal-on-scroll,
+    .stagger-card,
+    .reveal-scale,
+    .reveal-heading {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    .split-word-item {
+        transform: none !important;
+        opacity: 1 !important;
+        transition: none !important;
+    }
+    .hero-orbital-float,
+    .hero-star-dynamic,
+    .hero-orbital-glow,
+    .orbit-ellipse,
+    .orbit-ellipse-reverse {
+        animation: none !important;
+        transform: none !important;
+    }
+    
+}
+
+
+/* ================= HERO HEADLINE VISIBILITY GUARANTEE ================= */
+#hero h1,
+#hero h1 * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+}
+
+/* ================= HERO CONTENT PERMANENT VISIBILITY GUARANTEE ================= */
+#hero,
+#hero .lg\:col-span-7,
+#hero .lg\:col-span-5,
+#hero h1,
+#hero h1 *,
+#hero p,
+#hero a,
+#hero .btn-red,
+#hero .hero-orbital-stage,
+#hero .hero-orbital-card {
+    opacity: 1 !important;
+    visibility: visible !important;
+}

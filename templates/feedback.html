@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <!-- Favicon & Brand Icons -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48x48.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & Community Voice — Hack with India | MCET Chapter</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#08080A',
+                            dark: '#0B0B0E',
+                            card: '#111114',
+                            red: '#FF2A2A',
+                            redHover: '#E01B1B',
+                            redDark: '#730F0F',
+                            border: 'rgba(255, 255, 255, 0.1)',
+                            text: '#F4F4F5',
+                            muted: '#A1A1AA'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                        headline: ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="/static/css/vibes.css">
+
+    <style>
+        .star-rating {
+            display: inline-flex;
+            flex-direction: row-reverse;
+            gap: 0.35rem;
+        }
+        .star-rating input {
+            display: none;
+        }
+        .star-rating label {
+            cursor: pointer;
+            font-size: 1.75rem;
+            color: #3F3F46;
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #FF2A2A;
+            text-shadow: 0 0 12px rgba(255, 42, 42, 0.4);
+            transform: scale(1.08);
+        }
+    </style>
+</head>
+<body class="bg-[#0B0B0E] text-[#F4F4F5] font-sans antialiased selection:bg-[#FF2A2A] selection:text-white min-h-screen flex flex-col">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-[#0B0B0E]/95 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Official HackWithIndia Logo: Bold Uppercase H with Integrated Upward-Right Arrow -->
+            <a href="/" class="flex items-center gap-3 group">
+                <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="HackWithIndia Logo">
+                    <rect x="3" y="3.5" width="6.5" height="25" fill="#F32936"/>
+                    <rect x="9.5" y="13.5" width="8" height="5.5" fill="#F32936"/>
+                    <path d="M17.5 28.5H24.5V8L30.5 14V1.5H18L24 7.5H17.5V28.5Z" fill="#F32936"/>
+                </svg>
+                <div class="flex flex-col">
+                    <span class="font-headline font-bold text-white text-base tracking-tight leading-none group-hover:text-zinc-100 transition-colors">
+                        hackwith<span class="text-[#F32936]">india</span>
+                    </span>
+                    <span class="text-[9px] font-mono font-semibold tracking-[0.22em] text-zinc-400 uppercase mt-1">
+                        MCET CHAPTER
+                    </span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-4">
+                <a href="/" class="text-xs font-mono uppercase tracking-wider text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 py-1.5 px-3 rounded hover:bg-white/5">
+                    <span>←</span>
+                    <span>Back to Home</span>
+                </a>
+                <a href="/register" class="btn-red text-xs py-1.5 px-4 font-semibold">
+                    Join Chapter ↗
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-10 space-y-10">
+
+        <!-- Page Hero / Banner -->
+        <div class="space-y-3 border-b border-white/10 pb-6">
+            <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-[#FF2A2A]">
+                <span class="w-2 h-2 rounded-full bg-[#FF2A2A] animate-pulse"></span>
+                <span>ATTENDEE & GUEST FEEDBACK PORTAL</span>
+            </div>
+            <h1 class="font-headline font-black text-3xl sm:text-5xl uppercase tracking-tight text-white">
+                Share Your Experience.
+            </h1>
+            <p class="text-sm text-zinc-400 max-w-2xl font-normal leading-relaxed">
+                Whether you participated in a hackathon sprint, attended a tech session, or evaluated projects as a guest judge, your authentic feedback shapes the future of the MCET tech community.
+            </p>
+        </div>
+
+        <!-- Feedback Submission Card -->
+        <div class="cyber-card p-6 sm:p-10 space-y-6">
+            <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                <div>
+                    <h2 class="font-headline font-bold text-lg uppercase text-white tracking-tight">
+                        Submit New Feedback
+                    </h2>
+                    <p class="text-xs text-zinc-400 font-normal mt-0.5">
+                        Saved in real-time to the SQLite database
+                    </p>
+                </div>
+                <span class="text-[10px] font-mono uppercase text-[#FF2A2A] bg-red-950/40 border border-red-500/20 px-2.5 py-1 rounded">
+                    LIVE DB SYNC
+                </span>
+            </div>
+
+            <form id="feedback-form" onsubmit="handleFeedbackSubmit(event)" class="space-y-5">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <!-- Author Name -->
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-300 mb-1.5">
+                            Your Name / Alias <span class="text-[#FF2A2A]">*</span>
+                        </label>
+                        <input type="text" id="fb-author" required placeholder="e.g. Rahul Sharma"
+                               class="cyber-input w-full text-xs">
+                    </div>
+
+                    <!-- Role -->
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-300 mb-1.5">
+                            Your Role at the Event <span class="text-[#FF2A2A]">*</span>
+                        </label>
+                        <select id="fb-role" required class="cyber-input w-full text-xs">
+                            <option value="Student Participant" selected>Student Participant</option>
+                            <option value="Guest Evaluator">Guest Evaluator / Judge</option>
+                            <option value="Faculty / Mentor">Faculty / Mentor</option>
+                            <option value="Visitor / Observer">Visitor / Observer</option>
+                            <option value="Organizing Volunteer">Organizing Volunteer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-center">
+                    <!-- Rating -->
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-300 mb-1.5">
+                            Rating <span class="text-[#FF2A2A]">*</span>
+                            <span id="rating-label" class="text-xs text-[#FF2A2A] ml-2 font-mono">5 / 5 (Excellent)</span>
+                        </label>
+                        <div class="star-rating pt-1">
+                            <input type="radio" id="star5" name="rating" value="5" checked onchange="updateRatingLabel(5)">
+                            <label for="star5" title="5 stars">★</label>
+                            
+                            <input type="radio" id="star4" name="rating" value="4" onchange="updateRatingLabel(4)">
+                            <label for="star4" title="4 stars">★</label>
+                            
+                            <input type="radio" id="star3" name="rating" value="3" onchange="updateRatingLabel(3)">
+                            <label for="star3" title="3 stars">★</label>
+                            
+                            <input type="radio" id="star2" name="rating" value="2" onchange="updateRatingLabel(2)">
+                            <label for="star2" title="2 stars">★</label>
+                            
+                            <input type="radio" id="star1" name="rating" value="1" onchange="updateRatingLabel(1)">
+                            <label for="star1" title="1 star">★</label>
+                        </div>
+                    </div>
+
+                    <!-- Category -->
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-300 mb-1.5">
+                            Feedback Category <span class="text-[#FF2A2A]">*</span>
+                        </label>
+                        <select id="fb-category" required class="cyber-input w-full text-xs">
+                            <option value="Overall Hackathon Vibe" selected>Overall Hackathon Vibe</option>
+                            <option value="Mentorship & Guidance">Mentorship & Guidance</option>
+                            <option value="Lab Bay Facilities">Lab Bay Facilities & Hardware</option>
+                            <option value="Evaluation & Rubric">Evaluation & Rubric Fairness</option>
+                            <option value="Problem Statements">Problem Statements & Tracks</option>
+                            <option value="Food & Logistics">Logistics & Hospitality</option>
+                            <option value="Other Suggestions">Other Suggestions</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Comment -->
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-300 mb-1.5">
+                        Your Feedback / Comments <span class="text-[#FF2A2A]">*</span>
+                    </label>
+                    <textarea id="fb-comment" rows="4" required
+                              placeholder="Share your honest experience, constructive critique, or what stood out most..."
+                              class="cyber-input w-full text-xs font-sans leading-relaxed"></textarea>
+                </div>
+
+                <!-- Submission Button -->
+                <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p class="text-[11px] text-zinc-500 font-mono">
+                        Instant sentiment indexing is automatically calculated upon submission.
+                    </p>
+                    <button type="submit" id="submit-btn" class="btn-red text-xs py-2.5 px-6 font-semibold w-full sm:w-auto">
+                        Submit Feedback
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Verified Feedbacks Feed -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div class="flex items-center gap-2">
+                    <h3 class="font-headline font-bold text-base uppercase text-white tracking-tight">
+                        Attendee Voice Feed
+                    </h3>
+                    <span id="feed-count" class="text-xs font-mono text-zinc-400">
+                        ({{ feedbacks|length }} recorded)
+                    </span>
+                </div>
+                <button onclick="refreshFeed()" class="text-xs font-mono text-zinc-400 hover:text-white transition-colors">
+                    ↻ Refresh Feed
+                </button>
+            </div>
+
+            <!-- Feed Container -->
+            <div id="feedback-stream" class="space-y-4">
+                {% if feedbacks and feedbacks|length > 0 %}
+                    {% for fb in feedbacks %}
+                    <div class="cyber-card p-5 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-white font-headline">{{ fb.author_name }}</span>
+                                <span class="text-xs font-mono px-2 py-0.5 rounded bg-white/5 text-zinc-400 border border-white/5">
+                                    {{ fb.role }}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[#FF2A2A] text-sm">
+                                    {% for i in range(fb.rating) %}★{% endfor %}
+                                </span>
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded {% if fb.sentiment == 'Positive' %}bg-red-950/40 text-[#FF2A2A] border border-red-500/20{% else %}bg-zinc-800 text-zinc-300{% endif %}">
+                                    {{ fb.sentiment }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-zinc-300 font-normal leading-relaxed italic">
+                            "{{ fb.comment }}"
+                        </p>
+
+                        <div class="flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-2 border-t border-white/5">
+                            <span>Topic: {{ fb.category }}</span>
+                            <span>{{ fb.created_at.strftime('%Y-%m-%d %H:%M') if fb.created_at else 'Recent' }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div id="empty-state" class="cyber-card p-8 text-center text-zinc-500 space-y-2">
+                        <div class="text-base font-headline uppercase text-zinc-400 font-bold">No Feedback Recorded Yet</div>
+                        <p class="text-xs text-zinc-500 font-normal">
+                            Be the first attendee or guest evaluator to share your thoughts using the form above!
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#050507] border-t border-white/10 py-8 text-zinc-500 text-xs font-mono mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#FF2A2A]"></span>
+                <span class="font-headline font-bold text-white uppercase">Hack with India</span>
+                <span>/ MCET Chapter</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="/" class="hover:text-white transition-colors">Home</a>
+                <a href="/#events" class="hover:text-white transition-colors">Events</a>
+                <a href="/register" class="hover:text-white transition-colors">Register</a>
+                <a href="/feedback" class="text-[#FF2A2A] hover:text-white transition-colors">Feedback</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        function updateRatingLabel(stars) {
+            const labels = {
+                5: '5 / 5 (Excellent)',
+                4: '4 / 5 (Very Good)',
+                3: '3 / 5 (Average)',
+                2: '2 / 5 (Needs Work)',
+                1: '1 / 5 (Poor)'
+            };
+            const el = document.getElementById('rating-label');
+            if (el) el.innerText = labels[stars] || `${stars} / 5`;
+        }
+
+        function showToast(title, message, isError = false) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded border text-xs shadow-2xl transition-all duration-300 pointer-events-auto ${
+                isError ? 'bg-[#180A0A] border-red-600 text-red-200' : 'bg-[#111114] border-[#FF2A2A] text-white'
+            }`;
+            toast.innerHTML = `
+                <div class="font-headline font-bold uppercase tracking-wider mb-1 text-[11px]">${title}</div>
+                <div class="text-zinc-300">${message}</div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        async function handleFeedbackSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+
+            const author = document.getElementById('fb-author').value.trim();
+            const role = document.getElementById('fb-role').value;
+            const category = document.getElementById('fb-category').value;
+            const comment = document.getElementById('fb-comment').value.trim();
+            const ratingRadio = document.querySelector('input[name="rating"]:checked');
+            const rating = ratingRadio ? parseInt(ratingRadio.value) : 5;
+
+            try {
+                const res = await fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        author_name: author,
+                        role: role,
+                        rating: rating,
+                        category: category,
+                        comment: comment
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.detail || data.message || 'Submission failed');
+                }
+
+                showToast('Feedback Received', 'Thank you! Your feedback has been recorded into the live database.');
+                document.getElementById('feedback-form').reset();
+                updateRatingLabel(5);
+
+                // Add card dynamically to the top of the feed
+                prependFeedbackToFeed(data.item);
+
+            } catch (err) {
+                showToast('Error Submitting', err.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Submit Feedback';
+            }
+        }
+
+        function prependFeedbackToFeed(fb) {
+            const stream = document.getElementById('feedback-stream');
+            const emptyState = document.getElementById('empty-state');
+            if (emptyState) emptyState.remove();
+
+            const starsHtml = '★'.repeat(fb.rating);
+            const dateStr = fb.created_at ? fb.created_at.replace('T', ' ').substring(0, 16) : 'Just now';
+
+            const card = document.createElement('div');
+            card.className = 'cyber-card p-5 space-y-3 border-l-2 border-l-[#FF2A2A] animate-pulse';
+            card.innerHTML = `
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-sm text-white font-headline">${escapeHtml(fb.author_name)}</span>
+                        <span class="text-xs font-mono px-2 py-0.5 rounded bg-white/5 text-zinc-400 border border-white/5">
+                            ${escapeHtml(fb.role)}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[#FF2A2A] text-sm">${starsHtml}</span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-red-950/40 text-[#FF2A2A] border border-red-500/20">
+                            ${escapeHtml(fb.sentiment || 'Positive')}
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-xs text-zinc-300 font-normal leading-relaxed italic">
+                    "${escapeHtml(fb.comment)}"
+                </p>
+
+                <div class="flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-2 border-t border-white/5">
+                    <span>Topic: ${escapeHtml(fb.category)}</span>
+                    <span>${dateStr}</span>
+                </div>
+            `;
+            stream.insertBefore(card, stream.firstChild);
+            setTimeout(() => card.classList.remove('animate-pulse'), 1000);
+
+            // Update counter
+            const counter = document.getElementById('feed-count');
+            if (counter) {
+                const current = parseInt(counter.innerText.replace(/\D/g, '')) || 0;
+                counter.innerText = `(${current + 1} recorded)`;
+            }
+        }
+
+        async function refreshFeed() {
+            try {
+                const res = await fetch('/api/feedbacks');
+                const items = await res.json();
+                const stream = document.getElementById('feedback-stream');
+                if (!items || items.length === 0) {
+                    stream.innerHTML = `
+                        <div id="empty-state" class="cyber-card p-8 text-center text-zinc-500 space-y-2">
+                            <div class="text-base font-headline uppercase text-zinc-400 font-bold">No Feedback Recorded Yet</div>
+                            <p class="text-xs text-zinc-500 font-normal">Be the first attendee or guest evaluator to share your thoughts using the form above!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                stream.innerHTML = items.map(fb => {
+                    const starsHtml = '★'.repeat(fb.rating);
+                    const dateStr = fb.created_at ? fb.created_at.replace('T', ' ').substring(0, 16) : 'Recent';
+                    return `
+                        <div class="cyber-card p-5 space-y-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-sm text-white font-headline">${escapeHtml(fb.author_name)}</span>
+                                    <span class="text-xs font-mono px-2 py-0.5 rounded bg-white/5 text-zinc-400 border border-white/5">
+                                        ${escapeHtml(fb.role)}
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[#FF2A2A] text-sm">${starsHtml}</span>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded ${fb.sentiment === 'Positive' ? 'bg-red-950/40 text-[#FF2A2A] border border-red-500/20' : 'bg-zinc-800 text-zinc-300'}">
+                                        ${escapeHtml(fb.sentiment)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p class="text-xs text-zinc-300 font-normal leading-relaxed italic">
+                                "${escapeHtml(fb.comment)}"
+                            </p>
+
+                            <div class="flex items-center justify-between text-[10px] font-mono text-zinc-500 pt-2 border-t border-white/5">
+                                <span>Topic: ${escapeHtml(fb.category)}</span>
+                                <span>${dateStr}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                const counter = document.getElementById('feed-count');
+                if (counter) counter.innerText = `(${items.length} recorded)`;
+                showToast('Feed Refreshed', 'Loaded latest feedback records from database.');
+            } catch (err) {
+                showToast('Refresh Error', err.message, true);
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>

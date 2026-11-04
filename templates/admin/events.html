@@ -1,0 +1,342 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Events & Tracks Management{% endblock %}
+{% block page_title %}Events Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Top Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#0E0E12] border border-border rounded-xl">
+        <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-white">Chapter Events & Challenges</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Control live hackathons, workshops, keynotes and registrations displayed on the public site.</p>
+        </div>
+        <button onclick="openCreateModal()" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span>Create New Event</span>
+        </button>
+    </div>
+
+    <!-- Events Table Card -->
+    <div class="bg-[#0E0E12] border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between pb-4 border-b border-border">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-white">Event Manifest</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 mono-num">{{ events|length }} ENTRIES</span>
+            </div>
+        </div>
+
+        {% if events and events|length > 0 %}
+        <div class="overflow-x-auto mt-4">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="text-zinc-500 font-mono uppercase text-[10px] border-b border-border">
+                        <th class="pb-3">Banner & Title</th>
+                        <th class="pb-3">Category</th>
+                        <th class="pb-3">Date / Time</th>
+                        <th class="pb-3">Capacity</th>
+                        <th class="pb-3">Team Limits</th>
+                        <th class="pb-3">Registration</th>
+                        <th class="pb-3">Status</th>
+                        <th class="pb-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border/60">
+                    {% for evt in events %}
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="py-3.5 pr-4">
+                            <div class="flex items-center gap-3">
+                                {% if evt.image_url %}
+                                <img src="{{ evt.image_url }}" alt="{{ evt.title }}" class="w-12 h-8 rounded object-cover border border-border shrink-0 bg-black">
+                                {% else %}
+                                <div class="w-12 h-8 rounded bg-zinc-800 border border-border flex items-center justify-center text-[10px] font-mono text-zinc-500 shrink-0">NO IMG</div>
+                                {% endif %}
+                                <div>
+                                    <div class="font-bold text-white text-xs">{{ evt.title }}</div>
+                                    <div class="text-[10px] text-zinc-400 font-mono">{{ evt.speaker }} • {{ evt.venue }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 pr-4">
+                            <span class="px-2 py-0.5 rounded bg-zinc-800/80 text-zinc-300 font-mono text-[10px] uppercase border border-zinc-700/50">
+                                {{ evt.category }}
+                            </span>
+                        </td>
+                        <td class="py-3.5 pr-4 font-mono text-zinc-300 text-[11px]">
+                            {{ evt.time_slot }}
+                        </td>
+                        <td class="py-3.5 pr-4 font-mono text-zinc-300 text-[11px]">
+                            {{ evt.capacity or 'Unlimited' }}
+                        </td>
+                        <td class="py-3.5 pr-4 font-mono text-zinc-300 text-[11px]">
+                            {{ evt.team_size_min or 1 }} – {{ evt.team_size_max or 4 }} members
+                        </td>
+                        <td class="py-3.5 pr-4">
+                            {% if evt.registration_open %}
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-950/60 text-emerald-400 border border-emerald-800/40">OPEN</span>
+                            {% else %}
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-red-950/60 text-red-400 border border-red-800/40">CLOSED</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3.5 pr-4">
+                            <button onclick="togglePublish({{ evt.id }}, {{ 'false' if evt.is_published else 'true' }})" class="px-2.5 py-1 rounded text-[10px] font-mono uppercase tracking-wider transition-colors border {% if evt.is_published %}bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20{% else %}bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700{% endif %}" title="Click to toggle public visibility">
+                                {{ 'PUBLISHED' if evt.is_published else 'DRAFT' }}
+                            </button>
+                        </td>
+                        <td class="py-3.5 text-right space-x-2">
+                            <button onclick="editEvent({{ evt.id }})" class="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-white/5 transition-colors" title="Edit Event Details">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
+                            <button onclick="deleteEvent({{ evt.id }}, '{{ evt.title|escape }}')" class="p-1.5 rounded text-zinc-500 hover:text-[#F32936] hover:bg-red-500/10 transition-colors" title="Delete Event">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <!-- Clean Empty State (Strictly Zero Seeded Data) -->
+        <div class="py-16 text-center text-zinc-500">
+            <div class="w-14 h-14 rounded-2xl bg-[#14141B] border border-border mx-auto flex items-center justify-center text-zinc-600 mb-4">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            </div>
+            <h3 class="text-sm font-mono uppercase tracking-wider text-white">No Events in Database</h3>
+            <p class="text-xs text-zinc-500 max-w-md mx-auto mt-1 leading-relaxed">
+                No events or sessions are currently registered. The public portal automatically displays the "Events Coming Soon" status banner until you publish your first session.
+            </p>
+            <button onclick="openCreateModal()" class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span>Launch First Event</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Create / Edit Event Modal -->
+<div id="event-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-[#0E0E12] border border-border rounded-2xl max-w-2xl w-full p-6 space-y-5 my-8 shadow-2xl relative">
+        <div class="flex items-center justify-between pb-3 border-b border-border">
+            <div>
+                <h3 id="modal-title" class="text-sm font-bold uppercase tracking-wider text-white">Create New Event</h3>
+                <p class="text-[11px] font-mono text-zinc-500">// ALL PARAMETERS DYNAMICALLY REFLECT ON PUBLIC SITE</p>
+            </div>
+            <button onclick="closeModal()" class="p-1 rounded text-zinc-500 hover:text-white text-lg">&times;</button>
+        </div>
+
+        <form id="event-form" class="space-y-4" onsubmit="saveEvent(event)">
+            <input type="hidden" id="event-id" value="">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Event Title *</label>
+                    <input type="text" id="evt-title" required placeholder="e.g. HWI FLAGSHIP 36H HACKATHON" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Category *</label>
+                    <select id="evt-category" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                        <option value="Hackathon">Hackathon</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Keynote">Keynote</option>
+                        <option value="Mentoring">Mentoring</option>
+                        <option value="Gaming">Gaming / Arena</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Speaker / Mentor *</label>
+                    <input type="text" id="evt-speaker" required placeholder="e.g. Organizing Core / Tech Lead" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Speaker Title</label>
+                    <input type="text" id="evt-speaker-title" placeholder="e.g. Industry Architect / MCET Tech Council" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Time Slot / Schedule *</label>
+                    <input type="text" id="evt-time" required placeholder="Day 1, 09:00 AM - 09:00 PM" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Venue / Location</label>
+                    <input type="text" id="evt-venue" placeholder="MCET Newton Lab & Auditorium" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Attendance Mode</label>
+                    <select id="evt-mode" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                        <option value="Offline">Offline</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Virtual">Virtual</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Max Capacity</label>
+                    <input type="number" id="evt-capacity" value="100" min="1" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Min Team Size</label>
+                    <input type="number" id="evt-team-min" value="1" min="1" max="10" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Max Team Size</label>
+                    <input type="number" id="evt-team-max" value="4" min="1" max="10" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Banner Image URL</label>
+                <div class="flex gap-2">
+                    <input type="url" id="evt-image" oninput="previewBanner(this.value)" placeholder="https://images.unsplash.com/photo-..." class="flex-1 bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div id="banner-preview" class="hidden mt-2 rounded-lg border border-border h-24 overflow-hidden relative">
+                    <img id="banner-img" src="" alt="Banner Preview" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Description / Brief</label>
+                <textarea id="evt-desc" rows="3" placeholder="Brief synopsis of the challenge, prizes, guidelines..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Badge Text (Optional)</label>
+                    <input type="text" id="evt-badge" placeholder="e.g. ₹1,00,000+ POOL or SEATS LIMITED" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div class="flex items-center gap-6 pt-5">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="evt-reg-open" checked class="w-4 h-4 accent-[#F32936]">
+                        <span class="text-xs text-zinc-300 font-medium">Registration Open</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="evt-published" checked class="w-4 h-4 accent-[#F32936]">
+                        <span class="text-xs text-zinc-300 font-medium">Publish to Website</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-border">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg border border-border text-xs text-zinc-400 hover:text-white transition-colors">Cancel</button>
+                <button type="submit" id="save-btn" class="px-5 py-2 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors">Save Event</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function previewBanner(url) {
+        const preview = document.getElementById('banner-preview');
+        const img = document.getElementById('banner-img');
+        if (url && url.startsWith('http')) {
+            img.src = url;
+            preview.classList.remove('hidden');
+        } else {
+            preview.classList.add('hidden');
+        }
+    }
+
+    function openCreateModal() {
+        document.getElementById('event-id').value = '';
+        document.getElementById('modal-title').textContent = 'Create New Event';
+        document.getElementById('event-form').reset();
+        document.getElementById('banner-preview').classList.add('hidden');
+        document.getElementById('evt-reg-open').checked = true;
+        document.getElementById('evt-published').checked = true;
+        document.getElementById('event-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('event-modal').classList.add('hidden');
+    }
+
+    async function editEvent(id) {
+        try {
+            const evt = await adminApi(`/api/admin/events/${id}`);
+            document.getElementById('event-id').value = evt.id;
+            document.getElementById('modal-title').textContent = 'Edit Event Details';
+            document.getElementById('evt-title').value = evt.title || '';
+            document.getElementById('evt-category').value = evt.category || 'Hackathon';
+            document.getElementById('evt-speaker').value = evt.speaker || '';
+            document.getElementById('evt-speaker-title').value = evt.speaker_title || '';
+            document.getElementById('evt-time').value = evt.time_slot || '';
+            document.getElementById('evt-venue').value = evt.venue || '';
+            document.getElementById('evt-mode').value = evt.mode || 'Offline';
+            document.getElementById('evt-capacity').value = evt.capacity || 100;
+            document.getElementById('evt-team-min').value = evt.team_size_min || 1;
+            document.getElementById('evt-team-max').value = evt.team_size_max || 4;
+            document.getElementById('evt-image').value = evt.image_url || '';
+            document.getElementById('evt-desc').value = evt.description || '';
+            document.getElementById('evt-badge').value = evt.badge_text || '';
+            document.getElementById('evt-reg-open').checked = !!evt.registration_open;
+            document.getElementById('evt-published').checked = !!evt.is_published;
+            previewBanner(evt.image_url);
+            document.getElementById('event-modal').classList.remove('hidden');
+        } catch (err) {
+            // Toast shown by adminApi
+        }
+    }
+
+    async function saveEvent(e) {
+        e.preventDefault();
+        const id = document.getElementById('event-id').value;
+        const payload = {
+            title: document.getElementById('evt-title').value.trim(),
+            category: document.getElementById('evt-category').value,
+            speaker: document.getElementById('evt-speaker').value.trim(),
+            speaker_title: document.getElementById('evt-speaker-title').value.trim(),
+            time_slot: document.getElementById('evt-time').value.trim(),
+            venue: document.getElementById('evt-venue').value.trim(),
+            mode: document.getElementById('evt-mode').value,
+            capacity: parseInt(document.getElementById('evt-capacity').value) || 100,
+            team_size_min: parseInt(document.getElementById('evt-team-min').value) || 1,
+            team_size_max: parseInt(document.getElementById('evt-team-max').value) || 4,
+            image_url: document.getElementById('evt-image').value.trim(),
+            description: document.getElementById('evt-desc').value.trim(),
+            badge_text: document.getElementById('evt-badge').value.trim(),
+            registration_open: document.getElementById('evt-reg-open').checked,
+            is_published: document.getElementById('evt-published').checked
+        };
+
+        try {
+            if (id) {
+                await adminApi(`/api/admin/events/${id}`, 'PUT', payload);
+                showToast('Event updated successfully');
+            } else {
+                await adminApi('/api/admin/events', 'POST', payload);
+                showToast('Event created successfully');
+            }
+            closeModal();
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+
+    async function togglePublish(id, newState) {
+        try {
+            await adminApi(`/api/admin/events/${id}/toggle-publish`, 'POST', { is_published: newState });
+            showToast(newState ? 'Event published to public website' : 'Event unpublished');
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+
+    async function deleteEvent(id, title) {
+        if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+        try {
+            await adminApi(`/api/admin/events/${id}`, 'DELETE');
+            showToast('Event removed successfully');
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+</script>
+{% endblock %}

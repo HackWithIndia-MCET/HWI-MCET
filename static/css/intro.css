@@ -1,0 +1,396 @@
+/**
+ * HackWithIndia × MCET — Premium 14-Second Immersive Cinematic Brand Intro
+ * STRICTLY NO LOADING INDICATORS / NO SPINNERS / NO PERCENTAGES
+ * Visual Identity: Deep Black (#080808), Electric Red (#F32936), Off-White (#F5F3EF)
+ * Technologies: Three.js + WebGL Fluid Shaders + 3D Particles + GSAP Timeline + SVG
+ */
+
+/* Prevent scroll during cinematic intro */
+body.intro-active {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* Base Fullscreen Cinematic Overlay */
+#cinematic-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background-color: #080808;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    perspective: 1200px;
+    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+#cinematic-intro.intro-fade-out {
+    opacity: 0 !important;
+    transform: scale(1.04) !important;
+    pointer-events: none;
+}
+
+#cinematic-intro.intro-fade-out .intro-stage {
+    opacity: 0;
+    transform: scale(1.08) translateY(-10px);
+    filter: blur(12px);
+    transition: all 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#cinematic-intro.intro-fade-out #intro-webgl-canvas {
+    opacity: 0;
+    transition: opacity 1.5s ease-out;
+}
+
+#cinematic-intro.intro-hidden {
+    display: none !important;
+}
+
+body.intro-active #cinematic-intro:not(.intro-hidden) {
+    display: flex;
+}
+
+/* WebGL GPU Fluid & Particle Canvas */
+#intro-webgl-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 1s ease;
+}
+
+/* Subtle Technical 56px Grid */
+.intro-grid {
+    position: absolute;
+    inset: -100px;
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: center center;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Ambient Radial Vignette & Center Spotlight Bloom */
+.intro-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 35%, rgba(8, 8, 8, 0.75) 75%, #080808 100%);
+    pointer-events: none;
+    z-index: 3;
+}
+
+.intro-ambient-bloom {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(243, 41, 54, 0.18) 0%, rgba(243, 41, 54, 0.05) 45%, transparent 70%);
+    filter: blur(40px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Technical Corner Annotations / HUD */
+.intro-tag {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(245, 243, 239, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.intro-tag-tl { top: 28px; left: 32px; }
+.intro-tag-bl { bottom: 28px; left: 32px; }
+.intro-tag-br { bottom: 28px; right: 32px; }
+
+/* Minimal Skip Intro Button */
+.intro-skip-btn {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #F5F3EF;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.25s ease;
+    opacity: 0;
+}
+
+.intro-skip-btn:hover {
+    background: rgba(243, 41, 54, 0.18);
+    border-color: #F32936;
+    color: #FFFFFF;
+    box-shadow: 0 0 16px rgba(243, 41, 54, 0.35);
+    transform: translateY(-1px);
+}
+
+.intro-skip-btn kbd {
+    font-size: 9px;
+    padding: 2px 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    color: #A1A1AA;
+}
+
+/* Center Visual Stage */
+.intro-stage {
+    position: relative;
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 15;
+    transform-style: preserve-3d;
+}
+
+/* ================= PHASE 3: GEOMETRIC STAR STRUCTURE ================= */
+/* Inspired by the 8-spoke red asterisk / atom graphic from the homepage */
+.intro-star-wrap {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.6) rotate(-45deg);
+    pointer-events: none;
+    z-index: 12;
+}
+
+.intro-star-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 25px rgba(243, 41, 54, 0.75));
+}
+
+/* Energy Pulse Shockwave Rings */
+.intro-energy-ring {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    border: 1.5px solid #F32936;
+    box-shadow: 0 0 30px rgba(243, 41, 54, 0.7), inset 0 0 20px rgba(243, 41, 54, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 11;
+}
+
+/* ================= SVG ORBITAL CURVES ================= */
+.intro-orbit-svg {
+    position: absolute;
+    width: 620px;
+    height: 620px;
+    max-width: 94vw;
+    max-height: 94vw;
+    pointer-events: none;
+    z-index: 5;
+    transform-origin: 300px 300px;
+    opacity: 0;
+}
+
+.intro-orbit-path-1 {
+    stroke: #F32936;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    transform: rotate(-25 300 300);
+    filter: drop-shadow(0 0 10px rgba(243, 41, 54, 0.6));
+    animation: introRotateSlow 35s linear infinite;
+    transform-origin: 300px 300px;
+}
+
+.intro-orbit-path-2 {
+    stroke: rgba(243, 41, 54, 0.65);
+    stroke-width: 1.2;
+    fill: none;
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    transform: rotate(38 300 300);
+    filter: drop-shadow(0 0 8px rgba(243, 41, 54, 0.4));
+    animation: introRotateSlowReverse 28s linear infinite;
+    transform-origin: 300px 300px;
+}
+
+.intro-orbit-guide {
+    transform-origin: 300px 300px;
+    animation: introRotateSlow 60s linear infinite;
+}
+
+@keyframes introRotateSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes introRotateSlowReverse {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+}
+
+/* ================= PHASE 4: TYPOGRAPHY LOCKUP (HWI × MCET) ================= */
+.intro-lockup {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 800;
+    font-size: clamp(3.2rem, 8vw, 6.8rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    z-index: 20;
+    opacity: 0;
+    transform: translateY(12px);
+    overflow: hidden;
+    padding: 0.1em 0.3em;
+}
+
+.intro-word-hwi {
+    display: inline-block;
+    color: #F5F3EF;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 243, 239, 0.15);
+    will-change: transform, opacity;
+}
+
+.intro-symbol-cross {
+    display: inline-block;
+    color: #F32936;
+    font-size: 0.85em;
+    font-weight: 700;
+    filter: drop-shadow(0 0 18px rgba(243, 41, 54, 0.85));
+    will-change: transform, opacity;
+    transform-origin: center center;
+}
+
+.intro-word-mcet {
+    display: inline-block;
+    color: #F5F3EF;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 243, 239, 0.15);
+    will-change: transform, opacity;
+}
+
+/* Cinematic Red Light Sweep Shimmer */
+.intro-light-sweep {
+    position: absolute;
+    inset: -20px 0;
+    background: linear-gradient(
+        105deg,
+        transparent 25%,
+        rgba(243, 41, 54, 0.35) 45%,
+        rgba(255, 255, 255, 0.7) 50%,
+        rgba(243, 41, 54, 0.45) 55%,
+        transparent 75%
+    );
+    background-size: 250% 100%;
+    background-repeat: no-repeat;
+    background-position: -150% 0;
+    mix-blend-mode: color-dodge;
+    pointer-events: none;
+    z-index: 25;
+    opacity: 0;
+}
+
+/* ================= PHASE 5: BRAND SUBTITLE & CHAPTER TAG ================= */
+.intro-sub-block {
+    position: relative;
+    margin-top: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    z-index: 20;
+    opacity: 0;
+}
+
+.intro-subtitle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(11px, 1.4vw, 13px);
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #F5F3EF;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 6px 18px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.intro-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #F32936;
+    box-shadow: 0 0 10px #F32936;
+    animation: introDotPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes introDotPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.85); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.intro-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(9px, 1.1vw, 11px);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #F32936;
+    opacity: 0.85;
+    font-weight: 600;
+}
+
+/* ================= RESPONSIVE ADJUSTMENTS ================= */
+@media (max-width: 768px) {
+    .intro-tag { display: none; }
+    .intro-skip-btn { top: 16px; right: 16px; padding: 6px 12px; font-size: 9px; }
+    .intro-lockup { gap: 0.8rem; }
+    .intro-subtitle { letter-spacing: 0.22em; padding: 5px 12px; }
+    .intro-orbit-svg { width: 380px; height: 380px; }
+    .intro-star-wrap { width: 180px; height: 180px; }
+}
+
+/* ================= ACCESSIBILITY ================= */
+@media (prefers-reduced-motion: reduce) {
+    #cinematic-intro {
+        display: none !important;
+    }
+}

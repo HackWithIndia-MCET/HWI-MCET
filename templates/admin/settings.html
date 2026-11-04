@@ -1,0 +1,218 @@
+{% extends "admin/base.html" %}
+
+{% block title %}System Settings & Security{% endblock %}
+{% block page_title %}Settings & Security{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Left: Administrator Credentials Modification Card -->
+        <div class="bg-[#0E0E12] border border-border rounded-xl p-6 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-border">
+                    <div class="flex items-center gap-2.5">
+                        <span class="p-2 rounded-lg bg-red-500/10 text-[#F32936]">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </span>
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-white">Administrator Credentials</h3>
+                            <p class="text-[10px] font-mono text-zinc-500">Supabase PostgreSQL & Argon2id Hash</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">
+                        Active User: <strong class="text-white">{{ admin_user.username if admin_user else 'HWI123' }}</strong>
+                    </span>
+                </div>
+
+                <form id="credentials-form" onsubmit="updateCredentials(event)" class="space-y-4 mt-5">
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">New Username <span class="text-zinc-500 normal-case">(optional)</span></label>
+                        <input type="text" id="new-username" placeholder="Leave blank to keep '{{ admin_user.username if admin_user else '' }}'" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Current Password * <span class="text-red-400 normal-case">(required for verification)</span></label>
+                        <input type="password" id="cur-pwd" required placeholder="Enter current password" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">New Password <span class="text-zinc-500 normal-case">(optional)</span></label>
+                            <input type="password" id="new-pwd" minlength="6" placeholder="Min 6 chars" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Confirm New Password</label>
+                            <input type="password" id="confirm-pwd" minlength="6" placeholder="Re-enter password" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full mt-2 px-4 py-2.5 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors shadow-lg shadow-red-950/20">
+                        Update Supabase Credentials
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-border text-[11px] font-mono text-zinc-500">
+                <span>Credentials persist in Supabase cloud PostgreSQL. Re-login is not required upon change.</span>
+            </div>
+        </div>
+
+        <!-- Right: Chapter Settings Card -->
+        <div class="bg-[#0E0E12] border border-border rounded-xl p-6 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-border">
+                    <div class="flex items-center gap-2.5">
+                        <span class="p-2 rounded-lg bg-blue-500/10 text-blue-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </span>
+                        <div>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-white">Chapter Configuration</h3>
+                            <p class="text-[10px] font-mono text-zinc-500">Global site flags and communication channels</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="site-settings-form" onsubmit="saveSiteSettings(event)" class="space-y-4 mt-5">
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Contact Email</label>
+                        <input type="email" id="set-email" value="{{ settings_dict.get('contact_email', 'mcet.hwi@gmail.com') }}" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Chapter Lead Contact / Discord</label>
+                        <input type="text" id="set-lead" value="{{ settings_dict.get('chapter_lead_contact', '@hwi_mcet_core') }}" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Global Registrations State</label>
+                        <select id="set-reg-global" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                            <option value="OPEN" {% if settings_dict.get('registrations_global_open', 'OPEN') == 'OPEN' %}selected{% endif %}>Open for Submissions</option>
+                            <option value="CLOSED" {% if settings_dict.get('registrations_global_open', 'OPEN') == 'CLOSED' %}selected{% endif %}>Closed / Stay Tuned Notice</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full mt-2 px-4 py-2.5 rounded-lg bg-[#181820] hover:bg-[#20202B] text-white text-xs font-semibold uppercase tracking-wider border border-border transition-colors">
+                        Save System Flags
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-border text-[11px] font-mono text-zinc-500">
+                <span>Stored in `site_settings` table in the shared database.</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Security Audit Logs Table -->
+    <div class="bg-[#0E0E12] border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between pb-4 border-b border-border">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-white">Full Administrative Audit Trail</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 mono-num">{{ audit_logs|length }} LOG ENTRIES</span>
+            </div>
+        </div>
+
+        {% if audit_logs and audit_logs|length > 0 %}
+        <div class="overflow-x-auto mt-4">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="text-zinc-500 font-mono uppercase text-[10px] border-b border-border">
+                        <th class="pb-2">Timestamp</th>
+                        <th class="pb-2">Admin User</th>
+                        <th class="pb-2">Action</th>
+                        <th class="pb-2">Details</th>
+                        <th class="pb-2">IP Address</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border/60">
+                    {% for log in audit_logs %}
+                    <tr class="hover:bg-white/[0.02]">
+                        <td class="py-2.5 font-mono text-zinc-400 text-[11px]">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') if log.created_at else '' }}</td>
+                        <td class="py-2.5 font-bold text-white">{{ log.admin_username }}</td>
+                        <td class="py-2.5">
+                            <span class="px-2 py-0.5 rounded bg-red-950/50 text-[#F32936] border border-red-900/40 text-[10px] font-mono">{{ log.action }}</span>
+                        </td>
+                        <td class="py-2.5 text-zinc-300 text-xs">{{ log.details }}</td>
+                        <td class="py-2.5 font-mono text-zinc-500 text-[11px]">{{ log.ip_address }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="py-12 text-center text-zinc-500 font-mono text-xs">
+            No audit records recorded yet.
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function updateCredentials(e) {
+        e.preventDefault();
+        const current_password = document.getElementById('cur-pwd').value;
+        const new_username = document.getElementById('new-username').value.trim();
+        const new_password = document.getElementById('new-pwd').value;
+        const confirm_password = document.getElementById('confirm-pwd').value;
+
+        if (!new_username && !new_password) {
+            showToast('Please provide a new username or a new password to update', 'error');
+            return;
+        }
+
+        if (new_password) {
+            if (new_password !== confirm_password) {
+                showToast('New passwords do not match', 'error');
+                return;
+            }
+            if (new_password.length < 6) {
+                showToast('New password must be at least 6 characters long', 'error');
+                return;
+            }
+        }
+
+        if (new_username && new_username.length < 3) {
+            showToast('New username must be at least 3 characters long', 'error');
+            return;
+        }
+
+        const payload = { current_password };
+        if (new_username) payload.new_username = new_username;
+        if (new_password) payload.new_password = new_password;
+
+        try {
+            const res = await adminApi('/api/admin/update-credentials', 'POST', payload);
+            showToast(res.message || 'Credentials successfully updated in Supabase');
+            document.getElementById('cur-pwd').value = '';
+            document.getElementById('new-pwd').value = '';
+            document.getElementById('confirm-pwd').value = '';
+            setTimeout(() => window.location.reload(), 1000);
+        } catch (err) {}
+    }
+
+    async function saveSiteSettings(e) {
+        e.preventDefault();
+        const contact_email = document.getElementById('set-email').value.trim();
+        const chapter_lead_contact = document.getElementById('set-lead').value.trim();
+        const registrations_global_open = document.getElementById('set-reg-global').value;
+
+        try {
+            await adminApi('/api/admin/settings', 'POST', {
+                settings: [
+                    { key: 'contact_email', value: contact_email, description: 'Chapter contact email' },
+                    { key: 'chapter_lead_contact', value: chapter_lead_contact, description: 'Lead contact info' },
+                    { key: 'registrations_global_open', value: registrations_global_open, description: 'Global registration status' }
+                ]
+            });
+            showToast('System configuration saved');
+        } catch (err) {}
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Games & Arena Challenges{% endblock %}
+{% block page_title %}Games & Arena{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Top Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#0E0E12] border border-border rounded-xl">
+        <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-white">Interactive Gaming & Speed Debug Arena</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Manage mini-games, trivia questions, code puzzles, and scoring rules for participants.</p>
+        </div>
+        <button onclick="openCreateModal()" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span>Create Challenge</span>
+        </button>
+    </div>
+
+    <!-- Challenges Grid -->
+    <div class="bg-[#0E0E12] border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between pb-4 border-b border-border">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-white">Active Challenges</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 mono-num">{{ games|length }} CHALLENGES</span>
+            </div>
+        </div>
+
+        {% if games and games|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {% for g in games %}
+            <div class="bg-[#121217] border border-border rounded-xl p-4 flex flex-col justify-between hover:border-zinc-700 transition-all">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded bg-red-950/60 text-[#F32936] border border-red-800/40 text-[10px] font-mono uppercase font-bold">{{ g.type }}</span>
+                        <span class="text-xs font-mono text-amber-400 font-bold">+{{ g.points }} PTS</span>
+                    </div>
+
+                    <h3 class="text-xs font-bold text-white">{{ g.title }}</h3>
+                    <p class="text-xs text-zinc-300">{{ g.question }}</p>
+
+                    {% if g.snippet %}
+                    <pre class="bg-black/60 p-2.5 rounded border border-border text-[11px] font-mono text-zinc-300 overflow-x-auto"><code>{{ g.snippet }}</code></pre>
+                    {% endif %}
+
+                    <div class="text-[11px] font-mono text-emerald-400 bg-emerald-950/20 p-2 rounded border border-emerald-800/30">
+                        <span class="text-zinc-500 uppercase text-[9px] block">Correct Answer</span>
+                        {{ g.correct_answer }}
+                    </div>
+                </div>
+
+                <div class="pt-3 mt-3 border-t border-border flex items-center justify-end gap-1.5 text-xs">
+                    <button onclick="editGame({{ g.id }})" class="p-1 rounded text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </button>
+                    <button onclick="deleteGame({{ g.id }}, '{{ g.title|escape }}')" class="p-1 rounded text-zinc-500 hover:text-[#F32936] hover:bg-red-500/10 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="py-16 text-center text-zinc-500">
+            <div class="w-14 h-14 rounded-2xl bg-[#14141B] border border-border mx-auto flex items-center justify-center text-zinc-600 mb-4">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-sm font-mono uppercase tracking-wider text-white">No Arena Challenges Registered</h3>
+            <p class="text-xs text-zinc-500 max-w-md mx-auto mt-1 leading-relaxed">
+                Launch trivia quizzes, debugging challenges, or coding speed sprints for hacker engagement during the event.
+            </p>
+            <button onclick="openCreateModal()" class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span>Add First Challenge</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Game Challenge Modal -->
+<div id="game-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-[#0E0E12] border border-border rounded-2xl max-w-xl w-full p-6 space-y-4 my-8 shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-border">
+            <h3 id="modal-title" class="text-sm font-bold uppercase tracking-wider text-white">Create Challenge</h3>
+            <button onclick="closeModal()" class="p-1 rounded text-zinc-500 hover:text-white text-lg">&times;</button>
+        </div>
+
+        <form id="game-form" onsubmit="saveGame(event)" class="space-y-4">
+            <input type="hidden" id="game-id" value="">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Challenge Title *</label>
+                    <input type="text" id="gm-title" required placeholder="e.g. Memory Leak Hunt #1" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Challenge Type *</label>
+                    <select id="gm-type" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                        <option value="speed_debug">Speed Debugging</option>
+                        <option value="cyber_trivia">Cyber Trivia</option>
+                        <option value="typing_dash">Typing Dash</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Question / Prompt *</label>
+                <textarea id="gm-question" rows="2" required placeholder="Describe the question or prompt..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Code Snippet (Optional)</label>
+                <textarea id="gm-snippet" rows="3" placeholder="// Paste faulty code snippet here..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#F32936]"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Correct Answer *</label>
+                    <input type="text" id="gm-answer" required placeholder="Exact expected answer..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Points Allocated</label>
+                    <input type="number" id="gm-points" value="50" min="10" step="10" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Explanation / Solution Note</label>
+                <input type="text" id="gm-explanation" placeholder="Why this is the correct answer..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+            </div>
+
+            <div class="pt-3 border-t border-border flex justify-end gap-3">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg border border-border text-xs text-zinc-400 hover:text-white">Cancel</button>
+                <button type="submit" class="px-5 py-2 rounded-lg bg-[#F32936] text-white text-xs font-semibold uppercase tracking-wider">Save Challenge</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function openCreateModal() {
+        document.getElementById('game-id').value = '';
+        document.getElementById('modal-title').textContent = 'Create Arena Challenge';
+        document.getElementById('game-form').reset();
+        document.getElementById('game-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('game-modal').classList.add('hidden');
+    }
+
+    async function editGame(id) {
+        try {
+            const g = await adminApi(`/api/admin/games/${id}`);
+            document.getElementById('game-id').value = g.id;
+            document.getElementById('modal-title').textContent = 'Edit Arena Challenge';
+            document.getElementById('gm-title').value = g.title || '';
+            document.getElementById('gm-type').value = g.type || 'speed_debug';
+            document.getElementById('gm-question').value = g.question || '';
+            document.getElementById('gm-snippet').value = g.snippet || '';
+            document.getElementById('gm-answer').value = g.correct_answer || '';
+            document.getElementById('gm-points').value = g.points || 50;
+            document.getElementById('gm-explanation').value = g.explanation || '';
+            document.getElementById('game-modal').classList.remove('hidden');
+        } catch (err) {}
+    }
+
+    async function saveGame(e) {
+        e.preventDefault();
+        const id = document.getElementById('game-id').value;
+        const payload = {
+            title: document.getElementById('gm-title').value.trim(),
+            type: document.getElementById('gm-type').value,
+            question: document.getElementById('gm-question').value.trim(),
+            snippet: document.getElementById('gm-snippet').value.trim(),
+            correct_answer: document.getElementById('gm-answer').value.trim(),
+            points: parseInt(document.getElementById('gm-points').value) || 50,
+            explanation: document.getElementById('gm-explanation').value.trim()
+        };
+
+        try {
+            if (id) {
+                await adminApi(`/api/admin/games/${id}`, 'PUT', payload);
+                showToast('Challenge updated');
+            } else {
+                await adminApi('/api/admin/games', 'POST', payload);
+                showToast('Challenge added');
+            }
+            closeModal();
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+
+    async function deleteGame(id, title) {
+        if (!confirm(`Delete challenge "${title}"?`)) return;
+        try {
+            await adminApi(`/api/admin/games/${id}`, 'DELETE');
+            showToast('Challenge removed');
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+</script>
+{% endblock %}

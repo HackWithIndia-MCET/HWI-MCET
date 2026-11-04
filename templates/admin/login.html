@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Authentication — HWI × MCET</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#F32936',
+                        'brand-hover': '#D91F2C'
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #070709;
+            color: #EDEDF0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(243, 41, 54, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.02) 0%, transparent 40%);
+        }
+        .mono-num { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 selection:bg-[#F32936] selection:text-white">
+
+    <div class="w-full max-w-md">
+        <!-- Logo & Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-[#F32936]/10 border border-[#F32936]/30 mb-4 text-[#F32936] font-mono text-2xl font-black">
+                H
+            </div>
+            <h1 class="text-xl font-bold uppercase tracking-wider text-white">HackWithIndia × MCET</h1>
+            <p class="text-xs font-mono uppercase tracking-widest text-zinc-500 mt-1">// SECURE ADMINISTRATIVE GATEWAY</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-[#0E0E12] border border-[#1E1E26] rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+            <!-- Subtle accent bar -->
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#F32936] to-transparent"></div>
+
+            <form id="admin-login-form" class="space-y-5" onsubmit="handleLogin(event)">
+                <!-- Alert Box -->
+                <div id="alert-box" class="hidden rounded-lg p-3 text-xs font-mono border"></div>
+
+                <!-- Username Input -->
+                <div>
+                    <label class="block text-xs font-mono uppercase tracking-wider text-zinc-400 mb-2">Username</label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            required 
+                            autocomplete="username"
+                            placeholder="Administrator username"
+                            class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#F32936] transition-colors"
+                        >
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-xs font-mono uppercase tracking-wider text-zinc-400">Password</label>
+                        <span class="text-[10px] font-mono text-zinc-600">ARGON2ID VERIFIED</span>
+                    </div>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            autocomplete="current-password"
+                            placeholder="••••••••••••"
+                            class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#F32936] transition-colors pr-10"
+                        >
+                        <button 
+                            type="button" 
+                            onclick="togglePasswordVisibility()" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                            tabindex="-1"
+                        >
+                            <svg id="eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    id="submit-btn"
+                    class="w-full mt-2 bg-[#F32936] hover:bg-[#D91F2C] text-white font-semibold py-2.5 px-4 rounded-lg text-sm tracking-wider uppercase transition-all shadow-lg shadow-red-900/20 flex items-center justify-center gap-2"
+                >
+                    <span id="btn-text">Authenticate</span>
+                    <svg id="btn-spinner" class="hidden animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="mt-6 pt-5 border-t border-[#1C1C24] text-center text-[11px] font-mono text-zinc-500">
+                <span>Direct Access Restricted • Server Session Active</span>
+            </div>
+        </div>
+
+        <!-- Public Portal Return Link -->
+        <div class="text-center mt-6">
+            <a href="/" class="text-xs text-zinc-500 hover:text-zinc-300 font-mono transition-colors">
+                ← Return to Public Website
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const alertBox = document.getElementById('alert-box');
+            const btn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('btn-spinner');
+
+            alertBox.classList.add('hidden');
+            btn.disabled = true;
+            btnText.textContent = "Verifying...";
+            spinner.classList.remove('hidden');
+
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alertBox.className = "rounded-lg p-3 text-xs font-mono border bg-emerald-950/40 border-emerald-700/50 text-emerald-300";
+                    alertBox.textContent = "Authentication verified. Access granted.";
+                    alertBox.classList.remove('hidden');
+                    setTimeout(() => {
+                        window.location.href = '/admin';
+                    }, 500);
+                } else {
+                    alertBox.className = "rounded-lg p-3 text-xs font-mono border bg-red-950/40 border-red-700/50 text-red-300";
+                    alertBox.textContent = data.detail || "Authentication failed.";
+                    alertBox.classList.remove('hidden');
+                    btn.disabled = false;
+                    btnText.textContent = "Authenticate";
+                    spinner.classList.add('hidden');
+                }
+            } catch (err) {
+                alertBox.className = "rounded-lg p-3 text-xs font-mono border bg-red-950/40 border-red-700/50 text-red-300";
+                alertBox.textContent = "Network error. Please try again.";
+                alertBox.classList.remove('hidden');
+                btn.disabled = false;
+                btnText.textContent = "Authenticate";
+                spinner.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

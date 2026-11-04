@@ -1,0 +1,305 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Registrations & Roster Management{% endblock %}
+{% block page_title %}Registrations Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Top Action & Search Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-[#0E0E12] border border-border rounded-xl">
+        <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-white">Participant Registrations</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Manage genuine team entries, rosters, check-in statuses and lab allotments.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="/api/admin/registrations/export" class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold uppercase tracking-wider transition-colors shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span>Export CSV</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-[#0E0E12] border border-border rounded-xl">
+        <div>
+            <label class="block text-[10px] font-mono uppercase text-zinc-500 mb-1">Search ID / Team / Lead</label>
+            <input type="text" id="reg-search" oninput="filterTable()" placeholder="Filter by ID, name or email..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-[#F32936]">
+        </div>
+        <div>
+            <label class="block text-[10px] font-mono uppercase text-zinc-500 mb-1">Filter by Status</label>
+            <select id="status-filter" onchange="filterTable()" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                <option value="ALL">All Statuses</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Checked-In">Checked-In</option>
+                <option value="In-Review">In-Review</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-[10px] font-mono uppercase text-zinc-500 mb-1">Filter by Track</label>
+            <select id="track-filter" onchange="filterTable()" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                <option value="ALL">All Tracks</option>
+                <option value="AI / Machine Learning">AI / Machine Learning</option>
+                <option value="Web3 & Blockchain">Web3 & Blockchain</option>
+                <option value="FinTech Innovation">FinTech Innovation</option>
+                <option value="Open Innovation">Open Innovation</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Registrations Table -->
+    <div class="bg-[#0E0E12] border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between pb-4 border-b border-border">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-white">Registered Teams</span>
+                <span id="record-count" class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 mono-num">{{ registrations|length }} ENTRIES</span>
+            </div>
+        </div>
+
+        {% if registrations and registrations|length > 0 %}
+        <div class="overflow-x-auto mt-4">
+            <table class="w-full text-left text-xs" id="reg-table">
+                <thead>
+                    <tr class="text-zinc-500 font-mono uppercase text-[10px] border-b border-border">
+                        <th class="pb-3">Reg ID</th>
+                        <th class="pb-3">Team & College</th>
+                        <th class="pb-3">Team Leader</th>
+                        <th class="pb-3">Track</th>
+                        <th class="pb-3">Roster</th>
+                        <th class="pb-3">Lab Allotment</th>
+                        <th class="pb-3">Status</th>
+                        <th class="pb-3 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border/60">
+                    {% for reg in registrations %}
+                    <tr class="reg-row hover:bg-white/[0.02] transition-colors" 
+                        data-search="{{ reg.registration_id }} {{ reg.team_name }} {{ reg.lead_name }} {{ reg.lead_email }}"
+                        data-status="{{ reg.status }}"
+                        data-track="{{ reg.track }}">
+                        <td class="py-3.5 pr-3 font-mono text-[11px] text-zinc-400">{{ reg.registration_id }}</td>
+                        <td class="py-3.5 pr-3">
+                            <div class="font-bold text-white text-xs">{{ reg.team_name }}</div>
+                            <div class="text-[10px] text-zinc-500 font-mono">{{ reg.college }}</div>
+                        </td>
+                        <td class="py-3.5 pr-3">
+                            <div class="text-zinc-200 font-medium">{{ reg.lead_name }}</div>
+                            <div class="text-[10px] text-zinc-500 font-mono">{{ reg.lead_email }} • {{ reg.lead_phone }}</div>
+                        </td>
+                        <td class="py-3.5 pr-3">
+                            <span class="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 font-mono text-[10px] border border-zinc-700/50">
+                                {{ reg.track }}
+                            </span>
+                        </td>
+                        <td class="py-3.5 pr-3">
+                            <button onclick="viewMembers({{ reg.id }}, '{{ reg.team_name|escape }}', '{{ reg.members|escape }}')" class="text-xs text-[#F32936] hover:underline font-mono">
+                                View Members
+                            </button>
+                        </td>
+                        <td class="py-3.5 pr-3 text-[11px] font-mono text-zinc-400">
+                            {{ reg.lab_allotment or 'Pending Allotment' }}
+                        </td>
+                        <td class="py-3.5 pr-3">
+                            <select onchange="updateStatus({{ reg.id }}, this.value)" class="bg-[#15151B] border border-[#23232C] rounded px-2 py-1 text-[11px] font-mono text-zinc-200 focus:outline-none focus:border-[#F32936]">
+                                <option value="Confirmed" {% if reg.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option value="Checked-In" {% if reg.status == 'Checked-In' %}selected{% endif %}>Checked-In</option>
+                                <option value="In-Review" {% if reg.status == 'In-Review' %}selected{% endif %}>In-Review</option>
+                                <option value="Rejected" {% if reg.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                            </select>
+                        </td>
+                        <td class="py-3.5 text-right space-x-1.5">
+                            <button onclick="editAllotment({{ reg.id }}, '{{ reg.lab_allotment|escape }}', '{{ reg.mentor_name|escape }}', '{{ reg.mentor_contact|escape }}')" class="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-white/5 transition-colors" title="Edit Allotment & Mentor">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            </button>
+                            <button onclick="deleteRegistration({{ reg.id }}, '{{ reg.team_name|escape }}')" class="p-1.5 rounded text-zinc-500 hover:text-[#F32936] hover:bg-red-500/10 transition-colors" title="Delete Registration">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="py-16 text-center text-zinc-500">
+            <div class="w-14 h-14 rounded-2xl bg-[#14141B] border border-border mx-auto flex items-center justify-center text-zinc-600 mb-4">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </div>
+            <h3 class="text-sm font-mono uppercase tracking-wider text-white">No Registrations in Database</h3>
+            <p class="text-xs text-zinc-500 max-w-md mx-auto mt-1 leading-relaxed">
+                When candidates submit registration for published events or hackathons, their records, rosters and contact details will appear here.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Team Members Inspection Modal -->
+<div id="members-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-[#0E0E12] border border-border rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-border">
+            <div>
+                <h3 id="members-team-title" class="text-sm font-bold uppercase tracking-wider text-white">Team Roster</h3>
+                <p class="text-[10px] font-mono text-zinc-500">// ROSTER MEMBERS LIST</p>
+            </div>
+            <button onclick="closeMembersModal()" class="p-1 rounded text-zinc-500 hover:text-white text-lg">&times;</button>
+        </div>
+
+        <div id="members-list" class="space-y-2 py-2"></div>
+
+        <div class="pt-3 border-t border-border flex justify-end">
+            <button onclick="closeMembersModal()" class="px-4 py-2 rounded-lg bg-[#181820] text-xs text-zinc-300 hover:text-white">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Allotment & Mentor Modal -->
+<div id="allotment-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-[#0E0E12] border border-border rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-border">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-white">Update Allotment & Mentor</h3>
+            <button onclick="closeAllotmentModal()" class="p-1 rounded text-zinc-500 hover:text-white text-lg">&times;</button>
+        </div>
+
+        <form onsubmit="saveAllotment(event)" class="space-y-4">
+            <input type="hidden" id="allot-reg-id" value="">
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Lab / Desk Allotment</label>
+                <input type="text" id="allot-lab" placeholder="e.g. Newton Lab - Desk B04" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+            </div>
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Mentor Name</label>
+                <input type="text" id="allot-mentor" placeholder="e.g. Prof. / Industry Mentor" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+            </div>
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Mentor Contact</label>
+                <input type="text" id="allot-contact" placeholder="e.g. mentor@mcet.edu.in" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+            </div>
+            <div class="pt-3 border-t border-border flex justify-end gap-3">
+                <button type="button" onclick="closeAllotmentModal()" class="px-4 py-2 rounded-lg border border-border text-xs text-zinc-400 hover:text-white">Cancel</button>
+                <button type="submit" class="px-5 py-2 rounded-lg bg-[#F32936] text-white text-xs font-semibold uppercase tracking-wider">Save Allotment</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function filterTable() {
+        const query = document.getElementById('reg-search').value.toLowerCase();
+        const status = document.getElementById('status-filter').value;
+        const track = document.getElementById('track-filter').value;
+        const rows = document.querySelectorAll('.reg-row');
+        let visible = 0;
+
+        rows.forEach(row => {
+            const dataSearch = (row.getAttribute('data-search') || '').toLowerCase();
+            const dataStatus = row.getAttribute('data-status') || '';
+            const dataTrack = row.getAttribute('data-track') || '';
+
+            const matchQuery = !query || dataSearch.includes(query);
+            const matchStatus = status === 'ALL' || dataStatus === status;
+            const matchTrack = track === 'ALL' || dataTrack === track;
+
+            if (matchQuery && matchStatus && matchTrack) {
+                row.style.display = '';
+                visible++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const countEl = document.getElementById('record-count');
+        if (countEl) countEl.textContent = `${visible} ENTRIES`;
+    }
+
+    function viewMembers(id, teamName, rawMembers) {
+        document.getElementById('members-team-title').textContent = `${teamName} — Roster`;
+        const list = document.getElementById('members-list');
+        list.innerHTML = '';
+
+        let members = [];
+        try {
+            members = JSON.parse(rawMembers || '[]');
+        } catch (e) {
+            members = rawMembers ? [rawMembers] : [];
+        }
+
+        if (members && members.length > 0) {
+            members.forEach((m, idx) => {
+                const item = document.createElement('div');
+                item.className = 'p-2.5 rounded-lg bg-[#14141A] border border-border flex items-center justify-between text-xs';
+                const name = typeof m === 'object' ? (m.name || JSON.stringify(m)) : m;
+                item.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-zinc-800 text-[10px] font-mono flex items-center justify-center text-zinc-400">${idx + 1}</span>
+                        <span class="font-medium text-white">${name}</span>
+                    </div>
+                    <span class="text-[10px] font-mono text-zinc-500 uppercase">MEMBER</span>
+                `;
+                list.appendChild(item);
+            });
+        } else {
+            list.innerHTML = '<p class="text-xs text-zinc-500 py-3 text-center font-mono">No extra team members listed (Individual entry).</p>';
+        }
+
+        document.getElementById('members-modal').classList.remove('hidden');
+    }
+
+    function closeMembersModal() {
+        document.getElementById('members-modal').classList.add('hidden');
+    }
+
+    function editAllotment(id, lab, mentor, contact) {
+        document.getElementById('allot-reg-id').value = id;
+        document.getElementById('allot-lab').value = lab === 'Pending Allotment' ? '' : lab;
+        document.getElementById('allot-mentor').value = mentor === 'To Be Assigned' ? '' : mentor;
+        document.getElementById('allot-contact').value = contact || '';
+        document.getElementById('allotment-modal').classList.remove('hidden');
+    }
+
+    function closeAllotmentModal() {
+        document.getElementById('allotment-modal').classList.add('hidden');
+    }
+
+    async function saveAllotment(e) {
+        e.preventDefault();
+        const id = document.getElementById('allot-reg-id').value;
+        const lab_allotment = document.getElementById('allot-lab').value.trim() || 'Pending Allotment';
+        const mentor_name = document.getElementById('allot-mentor').value.trim() || 'To Be Assigned';
+        const mentor_contact = document.getElementById('allot-contact').value.trim();
+
+        try {
+            await adminApi(`/api/admin/registrations/${id}`, 'PUT', {
+                status: 'Confirmed',
+                lab_allotment,
+                mentor_name,
+                mentor_contact
+            });
+            showToast('Allotment updated successfully');
+            closeAllotmentModal();
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+
+    async function updateStatus(id, newStatus) {
+        try {
+            await adminApi(`/api/admin/registrations/${id}`, 'PUT', { status: newStatus });
+            showToast(`Status updated to ${newStatus}`);
+        } catch (err) {}
+    }
+
+    async function deleteRegistration(id, teamName) {
+        if (!confirm(`Are you sure you want to delete registration for "${teamName}"?`)) return;
+        try {
+            await adminApi(`/api/admin/registrations/${id}`, 'DELETE');
+            showToast('Registration record deleted');
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+</script>
+{% endblock %}

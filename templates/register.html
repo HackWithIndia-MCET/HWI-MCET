@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <!-- Favicon & Brand Icons -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48x48.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Registration — Hack with India @ MCET Campus</title>
+
+    <!-- Google Fonts: Editorial Sans + Technical Monospace -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Custom Vibes Styles -->
+    <link rel="stylesheet" href="/static/css/vibes.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#FF2A2A',
+                            dark: '#0B0B0E',
+                            card: '#111114',
+                            border: 'rgba(255, 255, 255, 0.08)',
+                            text: '#F4F4F5'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        headline: ['Cabinet Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#0B0B0E] text-[#F4F4F5] font-sans antialiased selection:bg-[#FF2A2A] selection:text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-[#0B0B0E]/95 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Official HackWithIndia Logo: Bold Uppercase H with Integrated Upward-Right Arrow -->
+            <a href="/" class="flex items-center gap-3 group">
+                <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="HackWithIndia Logo">
+                    <rect x="3" y="3.5" width="6.5" height="25" fill="#F32936"/>
+                    <rect x="9.5" y="13.5" width="8" height="5.5" fill="#F32936"/>
+                    <path d="M17.5 28.5H24.5V8L30.5 14V1.5H18L24 7.5H17.5V28.5Z" fill="#F32936"/>
+                </svg>
+                <div class="flex flex-col">
+                    <span class="font-headline font-bold text-white text-base tracking-tight leading-none group-hover:text-zinc-100 transition-colors">
+                        hackwith<span class="text-[#F32936]">india</span>
+                    </span>
+                    <span class="text-[9px] font-mono font-semibold tracking-[0.22em] text-zinc-400 uppercase mt-1">
+                        MCET CHAPTER
+                    </span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-4">
+                <a href="/#events" class="text-xs font-mono uppercase tracking-wider text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 py-1.5 px-3 rounded hover:bg-white/5">
+                    ← Back to Events
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Registration Container -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14 w-full flex-grow">
+
+        <!-- Form Card Container -->
+        <div id="registration-form-section" class="space-y-6">
+            
+            <!-- Registration Closed Notification Card (Strict Requirement) -->
+            <div class="cyber-card p-8 sm:p-14 text-center border-l-4 border-l-[#FF2A2A] space-y-6 relative overflow-hidden">
+                <!-- Ambient Glow -->
+                <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-red-600/10 blur-3xl pointer-events-none"></div>
+
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/40 border border-red-500/30 text-xs font-mono font-bold text-[#FF2A2A] uppercase tracking-widest relative z-10">
+                    <span class="w-2 h-2 rounded-full bg-[#FF2A2A] animate-pulse"></span>
+                    REGISTRATION STATUS: CLOSED
+                </div>
+
+                <div class="space-y-3 relative z-10">
+                    <h1 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight">
+                        Registrations Are Closed For Now.
+                    </h1>
+                    <p class="text-xs sm:text-sm text-zinc-300 max-w-xl mx-auto leading-relaxed font-normal">
+                        Active registrations for the current round are currently closed. Stay tuned with the chapter of <strong class="text-white">HWI × MCET</strong> — more events, hackathons, and surprises to come!
+                    </p>
+                </div>
+
+                <div class="pt-4 flex flex-wrap justify-center items-center gap-4 relative z-10">
+                    <a href="/events" class="btn-red text-xs py-2.5 px-6 font-semibold inline-flex items-center gap-2">
+                        <span>Explore Events</span>
+                        <span>→</span>
+                    </a>
+                    <a href="/" class="btn-outline-dark text-xs py-2.5 px-6 font-mono uppercase tracking-wider">
+                        Back to Homepage
+                    </a>
+                </div>
+
+                <div class="pt-6 border-t border-white/10 text-[11px] font-mono text-zinc-500 uppercase tracking-widest relative z-10">
+                    // STAY TUNED WITH THE CHAPTER OF HWI × MCET • UPDATES BROADCAST VIA OFFICIAL CHANNELS
+                </div>
+            </div>        </div>
+
+        <!-- ================= CONFIRMATION / SUCCESS STATE ================= -->
+        <div id="registration-confirmation-section" class="hidden space-y-6">
+
+            <div class="space-y-2 border-b border-white/10 pb-6 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-950/40 border border-red-500/30 text-[11px] font-mono font-bold text-[#FF2A2A] uppercase">
+                    <span>✓</span> Registration Confirmed & Allotted
+                </div>
+                <h1 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight">
+                    Welcome to Hack with India!
+                </h1>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-lg mx-auto font-normal">
+                    Your team has been authenticated and recorded in the MCET chapter database. Present this pass during check-in.
+                </p>
+            </div>
+
+            <!-- Confirmation Pass Card -->
+            <div class="cyber-card overflow-hidden border border-[#FF2A2A]/40 shadow-2xl space-y-0">
+                <!-- Top Header Strip -->
+                <div class="bg-black/80 p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <span id="conf-reg-id" class="px-2.5 py-1 rounded font-mono text-xs font-bold bg-[#FF2A2A] text-white">
+                                HWI-MCET-10X
+                            </span>
+                            <span id="conf-mode" class="text-xs font-mono text-zinc-400">
+                                Offline Mode
+                            </span>
+                        </div>
+                        <h2 id="conf-team-name" class="font-headline font-bold text-2xl sm:text-3xl uppercase text-white tracking-tight">
+                            Team Name
+                        </h2>
+                        <p class="text-xs text-zinc-400 mt-1">
+                            Team Leader: <strong id="conf-lead-name" class="text-zinc-200">Leader Name</strong> • <span id="conf-college">MCET Campus</span>
+                        </p>
+                    </div>
+
+                    <div>
+                        <button onclick="window.print()" class="btn-outline-dark text-xs py-2 px-4 whitespace-nowrap">
+                            Print Pass
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Desk & Mentor Information -->
+                <div class="p-6 bg-[#0E0E12] border-b border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="p-3.5 rounded bg-black/40 border border-white/5 space-y-1">
+                        <div class="text-[10px] font-mono text-zinc-500 uppercase">Allocated Desk</div>
+                        <div id="conf-lab" class="text-xs font-bold text-white">Newton Innovation Lab</div>
+                        <div class="text-[10px] text-zinc-500">MCET Innovation Center</div>
+                    </div>
+
+                    <div class="p-3.5 rounded bg-black/40 border border-white/5 space-y-1">
+                        <div class="text-[10px] font-mono text-zinc-500 uppercase">Assigned Mentor</div>
+                        <div id="conf-mentor" class="text-xs font-bold text-white">Dr. Arvind Swaminathan</div>
+                        <div id="conf-mentor-contact" class="text-[10px] text-zinc-500 font-mono">mentor@mcet.edu.in</div>
+                    </div>
+
+                    <div class="p-3.5 rounded bg-black/40 border border-white/5 space-y-1">
+                        <div class="text-[10px] font-mono text-zinc-500 uppercase">Campus Wi-Fi</div>
+                        <div class="text-xs font-bold text-[#FF2A2A]">SSID: HWI_MCET_5G</div>
+                        <div class="text-[10px] text-zinc-400 font-mono">Key: hackwithindia2026</div>
+                    </div>
+                </div>
+
+                <!-- Event & Track -->
+                <div class="p-6 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+                    <div>
+                        <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">Registered Event</span>
+                        <span id="conf-event" class="text-zinc-200 font-bold">Hackathon 2026</span>
+                    </div>
+                    <div>
+                        <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">Selected Track</span>
+                        <span id="conf-track" class="text-[#FF2A2A] font-bold">AI & Intelligent Systems</span>
+                    </div>
+                </div>
+
+                <!-- Team Roster -->
+                <div class="p-6 border-b border-white/10 space-y-2">
+                    <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+                        Confirmed Team Roster
+                    </div>
+                    <div id="conf-roster" class="flex flex-wrap gap-2">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Next Steps Checklist -->
+                <div class="p-6 bg-black/20 space-y-3">
+                    <h4 class="font-headline font-bold text-xs uppercase tracking-wider text-white">
+                        Next Steps for Your Team
+                    </h4>
+                    <div class="space-y-2 text-xs text-zinc-300 font-normal">
+                        <div class="flex items-start gap-2 p-2 rounded bg-black/40 border border-white/5">
+                            <span class="text-[#FF2A2A] font-bold">1.</span>
+                            <span>Report to your allocated lab desk at Newton Innovation Center.</span>
+                        </div>
+                        <div class="flex items-start gap-2 p-2 rounded bg-black/40 border border-white/5">
+                            <span class="text-[#FF2A2A] font-bold">2.</span>
+                            <span>Connect all laptops to the high-speed Wi-Fi network (SSID: <code class="text-white">HWI_MCET_5G</code>).</span>
+                        </div>
+                        <div class="flex items-start gap-2 p-2 rounded bg-black/40 border border-white/5">
+                            <span class="text-[#FF2A2A] font-bold">3.</span>
+                            <span>Check into the Organiser Desk on the chapter portal to record attendance.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Footer -->
+                <div class="p-6 bg-black/60 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+                    <a href="/#allotment" class="btn-outline-dark text-xs py-2 px-4">
+                        Search Pass Later
+                    </a>
+                    <a href="/#events" class="btn-red text-xs py-2 px-5 font-bold">
+                        Return to Events
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#050507] border-t border-white/10 py-8 text-zinc-500 text-xs font-mono">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div>
+                Hack with India @ MCET Campus • Student Tech Council
+            </div>
+            <div>
+                Methodist College of Engineering & Technology, Hyderabad
+            </div>
+        </div>
+    </footer>
+
+    <!-- Client-side Registration Logic -->
+    <script>
+        // Track current member count: Leader (1) + Member 2 (1) = 2 initial members
+        let currentTotalMembers = 2;
+        const MIN_MEMBERS = 2;
+        const MAX_MEMBERS = 4;
+
+        // Parse query params to auto-select event
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('event_id');
+            const eventTitle = params.get('event_title');
+
+            const eventSelect = document.getElementById('selected_event');
+            if (eventSelect) {
+                if (eventId) {
+                    for (let i = 0; i < eventSelect.options.length; i++) {
+                        if (eventSelect.options[i].value === eventId) {
+                            eventSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                } else if (eventTitle) {
+                    for (let i = 0; i < eventSelect.options.length; i++) {
+                        if (eventSelect.options[i].getAttribute('data-title') === eventTitle || eventSelect.options[i].text.includes(eventTitle)) {
+                            eventSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add an additional team member slot (Member 3 or 4)
+        function addMemberSlot() {
+            if (currentTotalMembers >= MAX_MEMBERS) return;
+
+            currentTotalMembers++;
+            const memberIndex = currentTotalMembers;
+
+            const roster = document.getElementById('members-roster');
+            const slot = document.createElement('div');
+            slot.id = `member-slot-${memberIndex}`;
+            slot.className = 'p-4 rounded bg-black/40 border border-white/10 space-y-3 transition-all duration-200';
+            slot.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-mono font-bold text-zinc-300 uppercase">
+                        Member ${memberIndex} Information
+                    </span>
+                    <button type="button" onclick="removeMemberSlot(${memberIndex})" class="text-[10px] font-mono text-red-400 hover:text-red-300 px-2 py-0.5 rounded bg-red-950/40 border border-red-500/20">
+                        Remove
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-mono uppercase text-zinc-400 mb-1">Full Name</label>
+                        <input type="text" id="member_${memberIndex}_name" placeholder="Member ${memberIndex} Name" class="cyber-input w-full text-xs member-name-field" />
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-mono uppercase text-zinc-400 mb-1">Email Address</label>
+                        <input type="email" id="member_${memberIndex}_email" placeholder="member${memberIndex}@mcet.edu.in" class="cyber-input w-full text-xs member-email-field" />
+                    </div>
+                </div>
+            `;
+            roster.appendChild(slot);
+            updateMemberControls();
+        }
+
+        // Remove a dynamically added member slot
+        function removeMemberSlot(index) {
+            const slot = document.getElementById(`member-slot-${index}`);
+            if (slot) {
+                slot.remove();
+                currentTotalMembers--;
+                updateMemberControls();
+            }
+        }
+
+        // Update add/remove button states and counter
+        function updateMemberControls() {
+            const countEl = document.getElementById('current-member-count');
+            if (countEl) countEl.innerText = currentTotalMembers;
+
+            const addBtn = document.getElementById('add-member-btn');
+            const noticeEl = document.getElementById('limit-notice');
+
+            if (currentTotalMembers >= MAX_MEMBERS) {
+                if (addBtn) {
+                    addBtn.disabled = true;
+                    addBtn.classList.add('opacity-40', 'cursor-not-allowed');
+                }
+                if (noticeEl) noticeEl.innerText = 'Max 4 team members reached';
+            } else {
+                if (addBtn) {
+                    addBtn.disabled = false;
+                    addBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+                }
+                if (noticeEl) noticeEl.innerText = `Can add up to ${MAX_MEMBERS - currentTotalMembers} more member(s)`;
+            }
+        }
+
+        // Clean Toast Notification
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            const borderColors = {
+                success: 'border-[#FF2A2A] bg-[#111114] text-white shadow-2xl',
+                error: 'border-red-600 bg-[#160b0b] text-white shadow-2xl',
+                info: 'border-zinc-700 bg-[#111114] text-white shadow-2xl'
+            };
+
+            const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+            const iconColor = type === 'success' ? 'text-[#FF2A2A] bg-red-950/40 border border-red-500/30' : type === 'error' ? 'text-red-500 bg-red-950/60 border border-red-500/40' : 'text-zinc-400 bg-zinc-900 border border-zinc-700';
+
+            toast.className = `p-4 rounded-[3px] border-l-4 border transition-all duration-300 transform translate-y-2 opacity-0 flex items-start gap-3 pointer-events-auto ${borderColors[type] || borderColors.info}`;
+            toast.innerHTML = `
+                <div class="w-6 h-6 rounded flex items-center justify-center font-bold text-xs flex-shrink-0 ${iconColor}">
+                    ${icon}
+                </div>
+                <div>
+                    <h4 class="font-headline font-bold text-xs uppercase tracking-wider text-white">${title}</h4>
+                    <p class="text-xs text-zinc-400 mt-0.5 leading-relaxed font-normal">${message}</p>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
+        }
+
+        // Handle Registration Form Submission
+        async function handleTeamFormSubmit(event) {
+            event.preventDefault();
+
+            const errorBanner = document.getElementById('form-error-banner');
+            const errorMessage = document.getElementById('form-error-message');
+            errorBanner.classList.add('hidden');
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Submitting Registration...';
+
+            // Extract fields
+            const team_name = document.getElementById('team_name').value.trim();
+            const college = document.getElementById('college').value.trim() || 'MCET Campus';
+            const eventSelect = document.getElementById('selected_event');
+            const event_id = parseInt(eventSelect.value) || 0;
+            const event_title = eventSelect.options[eventSelect.selectedIndex]?.getAttribute('data-title') || eventSelect.options[eventSelect.selectedIndex]?.text || '';
+            const track = document.getElementById('track').value;
+            const mode = document.getElementById('mode').value;
+
+            // Leader
+            const lead_name = document.getElementById('lead_name').value.trim();
+            const lead_email = document.getElementById('lead_email').value.trim().toLowerCase();
+            const lead_phone = document.getElementById('lead_phone').value.trim();
+
+            // Client-side validation checks
+            if (!team_name || team_name.length < 2) {
+                showError("Team name must be at least 2 characters.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+                return;
+            }
+
+            if (!lead_name || lead_name.length < 2) {
+                showError("Team leader name is required.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+                return;
+            }
+
+            const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+            if (!emailRegex.test(lead_email)) {
+                showError("Please enter a valid email for the team leader.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+                return;
+            }
+
+            const digitsOnly = lead_phone.replace(/[^0-9]/g, '');
+            if (digitsOnly.length < 7) {
+                showError("Please enter a valid phone number (at least 7 digits).");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+                return;
+            }
+
+            // Member 2 (Required)
+            const m2_name = document.getElementById('member_2_name')?.value.trim() || '';
+            const m2_email = document.getElementById('member_2_email')?.value.trim().toLowerCase() || '';
+
+            if (!m2_name) {
+                showError("Member 2 full name is required for team registration.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+                return;
+            }
+            if (!emailRegex.test(m2_email)) {
+                showError("Member 2 has an invalid email address.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+                return;
+            }
+            if (m2_email === lead_email) {
+                showError("Member 2 cannot have the same email as the Team Leader.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+                return;
+            }
+
+            // Collect all members
+            const emailsSeen = new Set([lead_email, m2_email]);
+            const membersList = [
+                { name: m2_name, email: m2_email, role: 'Member 2' }
+            ];
+
+            // Additional optional members (Slot 3 & 4)
+            for (let idx = 3; idx <= 4; idx++) {
+                const nameInput = document.getElementById(`member_${idx}_name`);
+                const emailInput = document.getElementById(`member_${idx}_email`);
+                if (nameInput && emailInput) {
+                    const mName = nameInput.value.trim();
+                    const mEmail = emailInput.value.trim().toLowerCase();
+                    if (mName) {
+                        if (mEmail) {
+                            if (!emailRegex.test(mEmail)) {
+                                showError(`Member ${idx} has an invalid email address: ${mEmail}`);
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Submit Registration';
+                                return;
+                            }
+                            if (emailsSeen.has(mEmail)) {
+                                showError(`Duplicate email '${mEmail}' found. Each team member must have a distinct email.`);
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Submit Registration';
+                                return;
+                            }
+                            emailsSeen.add(mEmail);
+                        }
+                        membersList.push({ name: mName, email: mEmail, role: `Member ${idx}` });
+                    }
+                }
+            }
+
+            const payload = {
+                team_name,
+                lead_name,
+                lead_email,
+                lead_phone,
+                college,
+                track,
+                mode,
+                event_id,
+                event_title,
+                members: membersList,
+                is_spot_registration: false
+            };
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    showError(data.detail || 'Could not complete registration. Please verify details.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Submit Registration';
+                    return;
+                }
+
+                // SUCCESS STATE
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 75,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#FF2A2A', '#FFFFFF', '#111114']
+                    });
+                }
+
+                // Populate confirmation card
+                document.getElementById('conf-reg-id').innerText = data.registration_id;
+                document.getElementById('conf-team-name').innerText = data.team_name;
+                document.getElementById('conf-lead-name').innerText = data.lead_name;
+                document.getElementById('conf-college').innerText = data.college;
+                document.getElementById('conf-lab').innerText = data.lab_allotment;
+                document.getElementById('conf-mentor').innerText = data.mentor_name;
+                document.getElementById('conf-mentor-contact').innerText = data.mentor_contact;
+                document.getElementById('conf-mode').innerText = `${data.mode} Mode`;
+                document.getElementById('conf-event').innerText = event_title || 'Flagship Hackathon';
+                document.getElementById('conf-track').innerText = data.track;
+
+                // Roster tags
+                const rosterContainer = document.getElementById('conf-roster');
+                rosterContainer.innerHTML = (data.members || []).map(m => {
+                    const label = (typeof m === 'object' && m !== null) ? `${m.name}${m.email ? ' (' + m.email + ')' : ''}` : m;
+                    return `
+                        <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-xs font-mono text-zinc-300">
+                            👤 ${label}
+                        </span>
+                    `;
+                }).join('');
+
+                // Hide form, show confirmation
+                document.getElementById('registration-form-section').classList.add('hidden');
+                const confSection = document.getElementById('registration-confirmation-section');
+                confSection.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                showToast('Registration Confirmed!', `Team ID: ${data.registration_id} allotted!`, 'success');
+
+            } catch (err) {
+                console.error('Error submitting form:', err);
+                showError('Network error connecting to registration server. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit Registration';
+            }
+        }
+
+        function showError(msg) {
+            const errorBanner = document.getElementById('form-error-banner');
+            const errorMessage = document.getElementById('form-error-message');
+            errorMessage.innerText = msg;
+            errorBanner.classList.remove('hidden');
+            errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            showToast('Validation Error', msg, 'error');
+        }
+    </script>
+
+</body>
+</html>

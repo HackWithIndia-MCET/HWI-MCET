@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events & Sessions — Hack With India × MCET Chapter</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#F32936',
+                        'brand-hover': '#D91F2C',
+                        surface: '#0B0B0E',
+                        panel: '#101015',
+                        border: '#1E1E26'
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        headline: ['"Space Grotesk"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #070709;
+            color: #EDEDF0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .cyber-card {
+            background-color: #0E0E12;
+            border: 1px solid #1E1E26;
+            border-radius: 0.75rem;
+        }
+        .btn-red {
+            background-color: #F32936;
+            color: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+        .btn-red:hover {
+            background-color: #D91F2C;
+            transform: translateY(-1px);
+        }
+        .btn-outline-dark {
+            background-color: transparent;
+            border: 1px solid #272732;
+            color: #D4D4D8;
+            transition: all 0.2s ease;
+        }
+        .btn-outline-dark:hover {
+            border-color: #F32936;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#070709] text-zinc-100 antialiased selection:bg-[#F32936] selection:text-white">
+
+    <!-- Top Announcement Bar -->
+    <header class="w-full bg-[#0E0E12] border-b border-white/10 text-[11px] font-mono py-2 text-center text-zinc-400 px-4">
+        <span class="inline-flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-[#F32936] animate-pulse"></span>
+            <strong class="text-white uppercase tracking-wider">HACK WITH INDIA × MCET CHAPTER</strong>
+            <span class="hidden sm:inline text-zinc-600">•</span>
+            <span class="hidden sm:inline">Official Chapter Calendar & Event Streams</span>
+        </span>
+    </header>
+
+    <!-- Main Navigation Bar -->
+    <nav class="sticky top-0 z-50 w-full bg-[#070709]/90 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center gap-3 group">
+                <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+                    <rect width="34" height="34" rx="7" fill="#0C0C0F"/>
+                    <rect x="0.5" y="0.5" width="33" height="33" rx="6.5" stroke="#F32936" stroke-opacity="0.35"/>
+                    <path d="M8 8V26M26 8V26M8 17H26" stroke="#F32936" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M15 19L24 10M24 10H17M24 10V17" stroke="#F32936" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="flex flex-col">
+                    <div class="flex items-baseline font-headline font-black text-sm sm:text-base tracking-tight leading-none">
+                        <span class="text-white">HACKWITH</span><span class="text-[#F32936]">INDIA</span>
+                    </div>
+                    <span class="text-[9px] font-mono tracking-[0.28em] text-zinc-400 uppercase leading-tight mt-0.5 font-medium">MCET CHAPTER</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center gap-7 text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                <a href="/#about" class="hover:text-white transition-colors">About</a>
+                <a href="/events" class="text-[#F32936] transition-colors">Events</a>
+                <a href="/#team" class="hover:text-white transition-colors">The team</a>
+                <a href="/#domains" class="hover:text-white transition-colors">Domains</a>
+                <a href="/#resources" class="hover:text-white transition-colors">Resources</a>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-3">
+                <a href="/register" class="btn-red text-xs py-2 px-4 rounded-lg font-semibold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-lg shadow-red-950/40">
+                    <span>Register</span>
+                    <span class="text-sm">↗</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full py-12 sm:py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+
+            <!-- Section Header -->
+            <div class="border-b border-white/10 pb-6 space-y-2">
+                <div class="flex items-center gap-2 text-xs font-mono font-semibold tracking-[0.25em] uppercase text-[#F32936]">
+                    <span class="w-2 h-2 rounded-full bg-[#F32936] animate-pulse"></span>
+                    <span>// 02. CHAPTER CALENDAR & SESSIONS</span>
+                </div>
+                <h1 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight">
+                    Events & Sessions.
+                </h1>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-2xl font-normal leading-relaxed">
+                    Official schedule for hackathons, technical masterclasses, sprint reviews, and builder tracks hosted by HackWithIndia @ MCET Campus.
+                </p>
+            </div>
+
+            {% if events and events|length > 0 %}
+            <!-- Real Database Events List -->
+            <div class="space-y-6">
+                {% for evt in events %}
+                <div class="cyber-card p-6 sm:p-7 border border-[#1E1E26] hover:border-[#F32936]/50 transition-all duration-300 flex flex-col md:flex-row gap-6 relative overflow-hidden group">
+                    <!-- Banner -->
+                    <div class="w-full md:w-72 h-44 md:h-auto rounded-lg overflow-hidden bg-black shrink-0 border border-white/5 relative">
+                        {% if evt.image_url %}
+                        <img src="{{ evt.image_url }}" alt="{{ evt.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        {% else %}
+                        <div class="w-full h-full flex flex-col items-center justify-center bg-zinc-900/60 p-4 text-center">
+                            <span class="w-8 h-8 rounded bg-red-500/10 text-[#F32936] flex items-center justify-center font-mono font-bold text-sm mb-2">H</span>
+                            <span class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">HWI MCET EVENT</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Details -->
+                    <div class="flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2 text-xs font-mono text-zinc-400">
+                                    <span class="w-2 h-2 rounded-full bg-[#F32936]"></span>
+                                    <span>{{ evt.time_slot }}</span>
+                                    <span>•</span>
+                                    <span>{{ evt.mode }}</span>
+                                    <span>•</span>
+                                    <span class="text-[#F32936] font-semibold">{{ evt.category }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    {% if evt.badge_text %}
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-red-950/60 text-[#F32936] border border-red-800/40 uppercase font-semibold">
+                                        ★ {{ evt.badge_text }}
+                                    </span>
+                                    {% endif %}
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 uppercase">
+                                        • {{ evt.status }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <h2 class="font-headline text-xl sm:text-2xl font-extrabold uppercase text-white tracking-tight group-hover:text-zinc-100 transition-colors">
+                                {{ evt.title }}
+                            </h2>
+
+                            {% if evt.description %}
+                            <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
+                                {{ evt.description }}
+                            </p>
+                            {% endif %}
+                        </div>
+
+                        <div class="pt-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono">
+                            <div class="text-zinc-400 text-[11px]">
+                                <span>Speaker: <strong class="text-white">{{ evt.speaker }}</strong> ({{ evt.speaker_title }})</span>
+                                <span class="mx-1.5">•</span>
+                                <span>📍 {{ evt.venue }}</span>
+                            </div>
+
+                            <div class="flex items-center gap-3 shrink-0">
+                                {% if evt.secondary_link_url %}
+                                <a href="{{ evt.secondary_link_url }}" target="_blank" class="text-xs text-zinc-400 hover:text-white font-mono transition-colors">
+                                    {{ evt.secondary_link_label or 'Rulebook ↗' }}
+                                </a>
+                                {% endif %}
+
+                                {% if evt.registration_open %}
+                                <a href="/register?event_id={{ evt.id }}&event_title={{ evt.title|urlencode }}" class="btn-red text-xs py-2 px-5 rounded font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-lg">
+                                    <span>{{ evt.link_label or 'Register Team' }}</span>
+                                </a>
+                                {% else %}
+                                <span class="px-3 py-1.5 rounded bg-zinc-800 text-zinc-500 text-xs font-mono uppercase border border-zinc-700">
+                                    Registration Closed
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Signature Notice at bottom of events list -->
+            <div class="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono">
+                <div class="flex items-center gap-2.5 text-zinc-300">
+                    <span class="w-2 h-2 rounded-full bg-[#F32936]"></span>
+                    <span>Stay tuned with the chapter of <strong class="text-white">HWI × MCET</strong> — more events and more surprises to come.</span>
+                </div>
+                <span class="text-zinc-600 tracking-widest text-[10px] uppercase">// MCET.HWI</span>
+            </div>
+
+            {% else %}
+            <!-- Primary Events Empty State Card (Coming Soon & Transmission In Orbit) -->
+            <div class="cyber-card p-8 sm:p-14 border-l-4 border-l-[#F32936] space-y-8 relative overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-red-600/10 blur-3xl pointer-events-none"></div>
+
+                <div class="space-y-4 max-w-2xl relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/40 border border-red-500/30 text-[11px] font-mono text-[#F32936] uppercase tracking-widest">
+                        <span class="w-2 h-2 rounded-full bg-[#F32936] animate-pulse"></span>
+                        TRANSMISSION PENDING // SESSIONS IN ORBIT
+                    </div>
+
+                    <h2 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight leading-[1.05]">
+                        Events Coming Soon.
+                    </h2>
+
+                    <p class="text-xs sm:text-sm text-zinc-300 font-normal leading-relaxed">
+                        We are currently curating the next wave of high-octane hackathons, hands-on masterclasses, and industry mentorship sessions for the MCET builder community. Official schedules, problem statements, and registration links will unlock here soon.
+                    </p>
+                </div>
+
+                <div class="pt-2 flex flex-wrap items-center gap-4 relative z-10">
+                    <a href="/register" class="btn-red text-xs py-3 px-6 rounded-lg font-semibold inline-flex items-center gap-2 group">
+                        <span>Chapter Registration</span>
+                        <span class="text-sm transform group-hover:translate-x-0.5 transition-transform">↗</span>
+                    </a>
+                    <a href="/" class="btn-outline-dark text-xs py-3 px-6 rounded-lg font-mono uppercase tracking-wider">
+                        ← Back to Homepage
+                    </a>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono relative z-10">
+                    <div class="flex items-center gap-2.5 text-zinc-300">
+                        <span class="w-2 h-2 rounded-full bg-[#F32936]"></span>
+                        <span>Stay tuned with the chapter of <strong class="text-white">HWI × MCET</strong> — more events and more surprises to come.</span>
+                    </div>
+                    <span class="text-zinc-600 tracking-widest text-[10px] uppercase">// MCET.HWI</span>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#050507] border-t border-white/10 py-12 text-zinc-500 text-xs font-mono">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#F32936]"></span>
+                        <span class="font-headline font-bold text-white text-base uppercase tracking-tight">HACK WITH INDIA</span>
+                        <span class="text-[10px] text-zinc-400">/ MCET CHAPTER</span>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 mt-1">Student Led. Possibility Fuelled.</p>
+                    <p class="text-[10px] text-zinc-600 mt-0.5">Methodist College of Engineering & Technology (MCET Campus)</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-6 text-xs text-zinc-400 uppercase tracking-wider">
+                    <a href="/#about" class="hover:text-white transition-colors">About</a>
+                    <a href="/events" class="text-white transition-colors">Events</a>
+                    <a href="/#team" class="hover:text-white transition-colors">The Team</a>
+                    <a href="/#domains" class="hover:text-white transition-colors">Domains</a>
+                    <a href="/#resources" class="hover:text-white transition-colors">Resources</a>
+                    <a href="/register" class="hover:text-white transition-colors text-[#F32936]">Register</a>
+                </div>
+            </div>
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
+                <p>© 2026 Hack with India — MCET Chapter.</p>
+                <p>Designed for student builders, innovators, and collegiate hackathons.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

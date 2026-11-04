@@ -1,0 +1,231 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Schedule & Time Slots{% endblock %}
+{% block page_title %}Schedule Management{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Top Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#0E0E12] border border-border rounded-xl">
+        <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-white">Event Timeline & Agenda</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Control session time slots, speaker schedules, stream URLs, and live broadcast statuses.</p>
+        </div>
+        <button onclick="openCreateModal()" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span>Add Session Slot</span>
+        </button>
+    </div>
+
+    <!-- Schedule List -->
+    <div class="bg-[#0E0E12] border border-border rounded-xl p-5">
+        <div class="flex items-center justify-between pb-4 border-b border-border">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-white">Scheduled Slots</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 mono-num">{{ sessions|length }} SLOTS</span>
+            </div>
+        </div>
+
+        {% if sessions and sessions|length > 0 %}
+        <div class="divide-y divide-border/60 mt-4">
+            {% for s in sessions %}
+            <div class="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-white/[0.01] px-2 rounded-lg transition-colors">
+                <div class="flex items-start gap-4">
+                    <div class="p-2.5 rounded-lg bg-zinc-800/80 border border-zinc-700/50 text-[#F32936] font-mono text-xs font-bold shrink-0 text-center min-w-[70px]">
+                        {{ s.time_slot.split('-')[0] if '-' in s.time_slot else s.time_slot }}
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white text-sm">{{ s.title }}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase border 
+                                {% if s.status == 'Live Now' %}bg-red-950/60 text-red-400 border-red-800/40 animate-pulse
+                                {% elif s.status == 'Completed' %}bg-zinc-800 text-zinc-400 border-zinc-700
+                                {% else %}bg-blue-950/60 text-blue-400 border-blue-800/40{% endif %}">
+                                {{ s.status }}
+                            </span>
+                        </div>
+                        <div class="text-xs text-zinc-400 mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <span>Speaker: <strong class="text-zinc-200">{{ s.speaker }}</strong> ({{ s.speaker_title }})</span>
+                            <span>• Venue: {{ s.venue }}</span>
+                            <span>• Mode: {{ s.mode }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0 self-end md:self-center">
+                    <select onchange="updateSessionStatus({{ s.id }}, this.value)" class="bg-[#15151B] border border-[#23232C] rounded px-2.5 py-1 text-xs font-mono text-zinc-200 focus:outline-none focus:border-[#F32936]">
+                        <option value="Upcoming" {% if s.status == 'Upcoming' %}selected{% endif %}>Upcoming</option>
+                        <option value="Live Now" {% if s.status == 'Live Now' %}selected{% endif %}>Live Now</option>
+                        <option value="Completed" {% if s.status == 'Completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                    <button onclick="editSession({{ s.id }})" class="p-1.5 rounded text-zinc-400 hover:text-white hover:bg-white/5 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </button>
+                    <button onclick="deleteSession({{ s.id }}, '{{ s.title|escape }}')" class="p-1.5 rounded text-zinc-500 hover:text-[#F32936] hover:bg-red-500/10 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="py-16 text-center text-zinc-500">
+            <div class="w-14 h-14 rounded-2xl bg-[#14141B] border border-border mx-auto flex items-center justify-center text-zinc-600 mb-4">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-sm font-mono uppercase tracking-wider text-white">No Agenda Sessions Configured</h3>
+            <p class="text-xs text-zinc-500 max-w-md mx-auto mt-1 leading-relaxed">
+                Add keynote talks, mentorship checkpoints, pitching rounds, and workshop time slots to build the event schedule.
+            </p>
+            <button onclick="openCreateModal()" class="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#F32936] hover:bg-[#D91F2C] text-white text-xs font-semibold uppercase tracking-wider transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span>Add First Slot</span>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- Session Slot Modal -->
+<div id="session-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-[#0E0E12] border border-border rounded-2xl max-w-xl w-full p-6 space-y-4 my-8 shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-border">
+            <h3 id="modal-title" class="text-sm font-bold uppercase tracking-wider text-white">Schedule Session Slot</h3>
+            <button onclick="closeModal()" class="p-1 rounded text-zinc-500 hover:text-white text-lg">&times;</button>
+        </div>
+
+        <form id="session-form" onsubmit="saveSession(event)" class="space-y-4">
+            <input type="hidden" id="session-id" value="">
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Session Title *</label>
+                <input type="text" id="slot-title" required placeholder="e.g. Opening Keynote: Modern AI Engineering" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Speaker *</label>
+                    <input type="text" id="slot-speaker" required placeholder="Speaker name or Organizing Team" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Speaker Title</label>
+                    <input type="text" id="slot-speaker-title" placeholder="Designation / Org" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Time Slot *</label>
+                    <input type="text" id="slot-time" required placeholder="Day 1, 10:00 AM - 11:30 AM" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Venue</label>
+                    <input type="text" id="slot-venue" placeholder="Auditorium" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Mode</label>
+                    <select id="slot-mode" class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+                        <option value="Offline">Offline</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Virtual">Virtual</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Live Stream URL (Optional)</label>
+                <input type="url" id="slot-stream" placeholder="https://youtube.com/live/..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]">
+            </div>
+
+            <div>
+                <label class="block text-xs font-mono uppercase text-zinc-400 mb-1">Summary / Highlights</label>
+                <textarea id="slot-desc" rows="2" placeholder="Key points covered..." class="w-full bg-[#15151B] border border-[#23232C] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F32936]"></textarea>
+            </div>
+
+            <div class="pt-3 border-t border-border flex justify-end gap-3">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg border border-border text-xs text-zinc-400 hover:text-white">Cancel</button>
+                <button type="submit" class="px-5 py-2 rounded-lg bg-[#F32936] text-white text-xs font-semibold uppercase tracking-wider">Save Slot</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function openCreateModal() {
+        document.getElementById('session-id').value = '';
+        document.getElementById('modal-title').textContent = 'Add Schedule Slot';
+        document.getElementById('session-form').reset();
+        document.getElementById('session-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('session-modal').classList.add('hidden');
+    }
+
+    async function editSession(id) {
+        try {
+            const s = await adminApi(`/api/admin/events/${id}`);
+            document.getElementById('session-id').value = s.id;
+            document.getElementById('modal-title').textContent = 'Edit Schedule Slot';
+            document.getElementById('slot-title').value = s.title || '';
+            document.getElementById('slot-speaker').value = s.speaker || '';
+            document.getElementById('slot-speaker-title').value = s.speaker_title || '';
+            document.getElementById('slot-time').value = s.time_slot || '';
+            document.getElementById('slot-venue').value = s.venue || '';
+            document.getElementById('slot-mode').value = s.mode || 'Offline';
+            document.getElementById('slot-stream').value = s.stream_url || '';
+            document.getElementById('slot-desc').value = s.description || '';
+            document.getElementById('session-modal').classList.remove('hidden');
+        } catch (err) {}
+    }
+
+    async function saveSession(e) {
+        e.preventDefault();
+        const id = document.getElementById('session-id').value;
+        const payload = {
+            title: document.getElementById('slot-title').value.trim(),
+            speaker: document.getElementById('slot-speaker').value.trim(),
+            speaker_title: document.getElementById('slot-speaker-title').value.trim(),
+            time_slot: document.getElementById('slot-time').value.trim(),
+            venue: document.getElementById('slot-venue').value.trim(),
+            mode: document.getElementById('slot-mode').value,
+            stream_url: document.getElementById('slot-stream').value.trim(),
+            description: document.getElementById('slot-desc').value.trim(),
+            category: 'Workshop'
+        };
+
+        try {
+            if (id) {
+                await adminApi(`/api/admin/events/${id}`, 'PUT', payload);
+                showToast('Schedule slot updated');
+            } else {
+                await adminApi('/api/admin/events', 'POST', payload);
+                showToast('Schedule slot created');
+            }
+            closeModal();
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+
+    async function updateSessionStatus(id, newStatus) {
+        try {
+            await adminApi(`/api/admin/events/${id}`, 'PUT', { status: newStatus });
+            showToast(`Session marked as ${newStatus}`);
+        } catch (err) {}
+    }
+
+    async function deleteSession(id, title) {
+        if (!confirm(`Delete slot "${title}"?`)) return;
+        try {
+            await adminApi(`/api/admin/events/${id}`, 'DELETE');
+            showToast('Slot removed');
+            setTimeout(() => window.location.reload(), 600);
+        } catch (err) {}
+    }
+</script>
+{% endblock %}

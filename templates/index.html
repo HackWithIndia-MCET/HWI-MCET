@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <!-- Favicon & Brand Icons -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48x48.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack with India — MCET Chapter | Official Community Portal</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyberBlack: '#08080A',
+                        cyberCard: '#101014',
+                        cyberCardHover: '#16161B',
+                        cyberRed: '#FF2A2A',
+                        cyberRedHover: '#E02020',
+                        cyberRedMuted: 'rgba(255, 42, 42, 0.15)',
+                        cyberBorder: 'rgba(255, 255, 255, 0.08)',
+                        cyberTextMuted: '#A1A1AA'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    
+    <!-- Custom Cyberpunk Stylesheet -->
+    <link rel="stylesheet" href="/static/css/vibes.css">
+    <!-- Cinematic Intro Stylesheet -->
+    <link rel="stylesheet" href="/static/css/intro.css">
+    <!-- Frontend Animations Stylesheet -->
+    <link rel="stylesheet" href="/static/css/animations.css">
+
+    <!-- Anti-flicker check for session intro -->
+    <script>
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            if (sessionStorage.getItem('hwi_mcet_intro_seen') === 'true' && params.get('intro') !== '1' && params.get('replay') !== '1') {
+                document.documentElement.classList.add('intro-skipped');
+            }
+        })();
+    </script>
+    <style>
+        html.intro-skipped #cinematic-intro { display: none !important; }
+    </style>
+</head>
+<body class="bg-[#08080A] text-[#F4F4F5] antialiased selection:bg-[#FF2A2A] selection:text-white flex flex-col min-h-screen">
+
+    <!-- ================= CINEMATIC 14.5-SECOND IMMERSIVE BRAND INTRO (HackWithIndia × MCET) ================= -->
+    <div id="cinematic-intro" role="dialog" aria-label="Intro Animation" class="intro-hidden">
+        
+        <!-- Subtle Technical 56px Grid Background (0s - 2s) -->
+        <div class="intro-grid"></div>
+
+        <!-- 3D Multi-Layer WebGL Fluid Ribbons & Particle Swarm Canvas (0s - 14.5s) -->
+        <canvas id="intro-webgl-canvas" class="intro-canvas"></canvas>
+
+        <!-- Ambient Center Red Spotlight Bloom -->
+        <div class="intro-ambient-bloom"></div>
+
+        <!-- Radial Vignette Mask -->
+        <div class="intro-vignette"></div>
+
+        <!-- Technical Corner Annotations / HUD -->
+        <div class="intro-tag intro-tag-tl">
+            <span class="text-[#F32936] font-bold">// </span>CORE_SYS.2026 // NODE_01
+        </div>
+        <div class="intro-tag intro-tag-bl">
+            CAMPUS: METHODIST COLLEGE OF ENG & TECH
+        </div>
+        <div class="intro-tag intro-tag-br">
+            IDEAS INTO IMPACT.
+        </div>
+
+        <!-- Minimal Skip Intro Button -->
+        <button id="intro-skip-btn" class="intro-skip-btn" aria-label="Skip Intro Animation">
+            <span>Skip</span>
+            <kbd>ESC</kbd>
+            <span class="text-[#F32936]">↗</span>
+        </button>
+
+        <!-- Geometric 3D-Shaded Star Structure (Phase 3: 6s - 9s) inspired by homepage hero -->
+        <div class="intro-star-wrap">
+            <svg class="intro-star-svg" viewBox="0 0 200 200" fill="none">
+                <defs>
+                    <linearGradient id="introRedFront" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FF3B30" />
+                        <stop offset="100%" stop-color="#F32936" />
+                    </linearGradient>
+                    <linearGradient id="introRedSide" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#B31A1A" />
+                        <stop offset="100%" stop-color="#730F0F" />
+                    </linearGradient>
+                </defs>
+                <!-- 3D Extruded Depth Spoke Shadows (Layer 1) -->
+                <rect x="98" y="24" width="12" height="152" rx="3" fill="url(#introRedSide)" transform="rotate(0 104 100)" />
+                <rect x="24" y="98" width="152" height="12" rx="3" fill="url(#introRedSide)" transform="rotate(0 100 104)" />
+                <rect x="98" y="24" width="12" height="152" rx="3" fill="url(#introRedSide)" transform="rotate(45 104 104)" />
+                <rect x="98" y="24" width="12" height="152" rx="3" fill="url(#introRedSide)" transform="rotate(-45 104 104)" />
+
+                <!-- Front Vivid Red Spokes (Layer 2) -->
+                <rect x="94" y="20" width="12" height="160" rx="2.5" fill="url(#introRedFront)" />
+                <rect x="20" y="94" width="160" height="12" rx="2.5" fill="url(#introRedFront)" />
+                <rect x="94" y="20" width="12" height="160" rx="2.5" fill="url(#introRedFront)" transform="rotate(45 100 100)" />
+                <rect x="94" y="20" width="12" height="160" rx="2.5" fill="url(#introRedFront)" transform="rotate(-45 100 100)" />
+            </svg>
+        </div>
+
+        <!-- Center Visual Stage -->
+        <div class="intro-stage">
+            
+            <!-- Dual Elliptical Orbital Curves SVG -->
+            <svg class="intro-orbit-svg" viewBox="0 0 600 600" fill="none">
+                <!-- Outer subtle circular guide ring -->
+                <circle class="intro-orbit-guide" cx="300" cy="300" r="240" stroke="rgba(255, 255, 255, 0.06)" stroke-dasharray="4 6" stroke-width="1" />
+                
+                <!-- Elliptical Orbit 1 (Inspired by homepage hero) -->
+                <ellipse class="intro-orbit-path-1" cx="300" cy="300" rx="260" ry="125" 
+                         stroke="#F32936" stroke-width="1.5" 
+                         transform="rotate(-25 300 300)"
+                         filter="drop-shadow(0 0 10px rgba(243, 41, 54, 0.6))" />
+                
+                <!-- Elliptical Orbit 2 (Counter diagonal) -->
+                <ellipse class="intro-orbit-path-2" cx="300" cy="300" rx="255" ry="130" 
+                         stroke="rgba(243, 41, 54, 0.6)" stroke-width="1.2" 
+                         transform="rotate(38 300 300)"
+                         filter="drop-shadow(0 0 8px rgba(243, 41, 54, 0.45))" />
+                
+                <!-- Inner technical core tick marks -->
+                <circle class="intro-orbit-core-dot" cx="300" cy="300" r="4.5" fill="#F32936" filter="drop-shadow(0 0 8px #F32936)" />
+            </svg>
+
+            <!-- Energy Shockwave Pulse Rings -->
+            <div class="intro-energy-ring intro-pulse-hwi"></div>
+
+            <!-- Brand Typography Lockup (Phase 4: 9s - 12s) -->
+            <div class="intro-lockup">
+                <span class="intro-word-hwi">HWI</span>
+                <span class="intro-symbol-cross">×</span>
+                <span class="intro-word-mcet">MCET</span>
+                
+                <!-- Red Light Sweep Shimmer Effect -->
+                <div class="intro-light-sweep"></div>
+            </div>
+
+            <!-- Subtitle and Chapter Tag (Phase 5: 12s - 14.5s) -->
+            <div class="intro-sub-block">
+                <div class="intro-subtitle">
+                    <span class="intro-pulse-dot"></span>
+                    <span>HACKWITHINDIA / MCET CHAPTER</span>
+                </div>
+                <div class="intro-tagline">
+                    BUILD. BREAK. REPEAT.
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm pointer-events-none"></div>
+
+    <!-- ================= HEADER (Matches Reference Image Exactly) ================= -->
+    <header class="sticky top-0 z-40 bg-[#08080A]/95 backdrop-blur-md border-b border-white/10 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Official HackWithIndia Logo: Bold Uppercase H with Integrated Upward-Right Arrow -->
+            <a href="#hero" class="flex items-center gap-3 group">
+                <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="HackWithIndia Logo">
+                    <!-- Left upright of uppercase H -->
+                    <rect x="3" y="3.5" width="6.5" height="25" fill="#F32936"/>
+                    <!-- Horizontal crossbar -->
+                    <rect x="9.5" y="13.5" width="8" height="5.5" fill="#F32936"/>
+                    <!-- Right upright of uppercase H with sharp upward-right arrow -->
+                    <path d="M17.5 28.5H24.5V8L30.5 14V1.5H18L24 7.5H17.5V28.5Z" fill="#F32936"/>
+                </svg>
+                <div class="flex flex-col">
+                    <span class="font-headline font-bold text-white text-base tracking-tight leading-none group-hover:text-zinc-100 transition-colors">
+                        hackwith<span class="text-[#F32936]">india</span>
+                    </span>
+                    <span class="text-[9px] font-mono font-semibold tracking-[0.22em] text-zinc-400 uppercase mt-1">
+                        MCET CHAPTER
+                    </span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-7 text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                <a href="#about" class="hover:text-white transition-colors">About</a>
+                <a href="#events" class="hover:text-white transition-colors">Events</a>
+                <a href="#team" class="hover:text-white transition-colors">The team</a>
+                <a href="#domains" class="hover:text-white transition-colors">Domains</a>
+                <a href="#resources" class="hover:text-white transition-colors">Resources</a>
+            </nav>
+
+            <!-- Join the Chapter Action Button -->
+            <div class="hidden sm:flex items-center gap-3">
+                <a href="/register" class="btn-outline-dark">
+                    <span>Join the chapter</span>
+                    <span class="text-[#FF2A2A] text-sm leading-none">↗</span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden text-zinc-400 hover:text-white p-2" aria-label="Toggle Navigation Menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Collapsible Menu -->
+        <div id="mobile-nav" class="hidden md:hidden border-t border-white/10 bg-[#0C0C0E] px-4 py-4 space-y-3 text-xs uppercase tracking-wider">
+            <a href="#about" onclick="toggleMobileMenu()" class="block py-1.5 text-zinc-300 hover:text-white">About</a>
+            <a href="#events" onclick="toggleMobileMenu()" class="block py-1.5 text-zinc-300 hover:text-white">Events</a>
+            <a href="#team" onclick="toggleMobileMenu()" class="block py-1.5 text-zinc-300 hover:text-white">The team</a>
+            <a href="#domains" onclick="toggleMobileMenu()" class="block py-1.5 text-zinc-300 hover:text-white">Domains</a>
+            <a href="#resources" onclick="toggleMobileMenu()" class="block py-1.5 text-zinc-300 hover:text-white">Resources</a>
+            <div class="pt-2">
+                <a href="/register" onclick="toggleMobileMenu()" class="btn-red w-full text-center py-2.5">
+                    Join the chapter ↗
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Floating Decorative Brand Badge (Matches Reference Screenshot) -->
+    <div class="fixed top-28 right-0 z-30 hidden sm:flex items-center justify-center w-8 h-8 bg-[#121216] border border-r-0 border-white/20 rounded-l-[4px] shadow-md pointer-events-none select-none" aria-hidden="true">
+        <span class="text-[#D4FF00] text-sm font-black animate-spin" style="animation-duration: 12s;">✱</span>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full">
+
+        <!-- ================= HERO SECTION (Exact Reference Reproduction) ================= -->
+        <section id="hero" class="relative pt-12 pb-16 lg:py-24 border-b border-white/10 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                    
+                    <!-- Left Column: Headline, Copy, Action Buttons -->
+                    <div class="lg:col-span-7 space-y-6">
+                        
+                        <!-- Small Chapter Tag -->
+                        <div class="flex items-center gap-2 text-xs font-mono font-semibold tracking-[0.25em] uppercase text-zinc-400">
+                            <span class="w-2 h-2 rounded-full bg-[#FF2A2A] animate-pulse"></span>
+                            <span>HACKWITHINDIA / MCET CHAPTER</span>
+                        </div>
+
+                        <!-- Oversized Condensed Headline -->
+                        <h1 class="font-headline text-5xl sm:text-7xl lg:text-[5.75rem] font-black uppercase leading-[0.92] tracking-tighter text-white">
+                            DON'T JUST<br>
+                            THINK IT.<br>
+                            <span class="text-[#FF2A2A]">BUILD IT.</span>
+                        </h1>
+
+                        <!-- Supporting Message -->
+                        <p class="text-zinc-300 text-sm sm:text-base leading-relaxed max-w-lg font-normal">
+                            Big ideas start with curious people. A campus community for the builders, the breakers, and everyone ready to make their first move.
+                        </p>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap items-center gap-5 pt-3">
+                            <a href="/register" class="btn-red">
+                                <span>Find your people</span>
+                                <span class="text-base leading-none">↗</span>
+                            </a>
+                            <a href="#events" class="text-xs uppercase tracking-wider text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors font-semibold group">
+                                <span>Explore events</span>
+                                <span class="text-sm transform group-hover:translate-y-0.5 transition-transform">↓</span>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Geometric 3D-Shaded Asterisk & Orbital Wireframe -->
+                    <div class="lg:col-span-5 relative flex items-center justify-center min-h-[340px] sm:min-h-[420px]">
+                        
+                        <!-- Technical Annotation: Top Right -->
+                        <div class="absolute top-0 right-2 text-[10px] font-mono tracking-[0.2em] uppercase text-zinc-500">
+                            IDEAS INTO IMPACT.
+                        </div>
+
+                        <!-- Wireframe SVG Container -->
+                        <div class="relative w-full max-w-[360px] aspect-square flex items-center justify-center">
+                            
+                            <!-- SVG Orbital Ellipses -->
+                            <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400" fill="none">
+                                <!-- First Diagonal Orbit Ring -->
+                                <ellipse class="orbit-ellipse" cx="200" cy="200" rx="180" ry="85" stroke="rgba(255, 42, 42, 0.45)" stroke-width="1.2" transform="rotate(-25 200 200)" />
+                                <!-- Second Diagonal Orbit Ring -->
+                                <ellipse class="orbit-ellipse-reverse" cx="200" cy="200" rx="175" ry="90" stroke="rgba(255, 42, 42, 0.3)" stroke-width="1" transform="rotate(38 200 200)" />
+                                <!-- Subtle Outer Circular Guide Ring -->
+                                <circle cx="200" cy="200" r="160" stroke="rgba(255, 255, 255, 0.05)" stroke-dasharray="3 4" stroke-width="0.8" />
+                            </svg>
+
+                            <!-- Center: 3D-Shaded Geometric Asterisk / Star -->
+                            <div class="relative z-10 w-44 h-44 flex items-center justify-center transform hover:scale-105 transition-transform duration-500 select-none">
+                                <svg class="w-full h-full" viewBox="0 0 200 200" fill="none">
+                                    <defs>
+                                        <!-- 3D Shadow Filter / Linear Gradients -->
+                                        <linearGradient id="redFront" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#FF3B30" />
+                                            <stop offset="100%" stop-color="#FF2A2A" />
+                                        </linearGradient>
+                                        <linearGradient id="redSide" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#B31A1A" />
+                                            <stop offset="100%" stop-color="#730F0F" />
+                                        </linearGradient>
+                                    </defs>
+
+                                    <!-- 3D Extruded Depth Spoke Shadows (Layer 1) -->
+                                    <!-- Spoke 1 (Vertical) Shadow -->
+                                    <rect x="98" y="24" width="12" height="152" rx="3" fill="url(#redSide)" transform="rotate(0 104 100)" />
+                                    <!-- Spoke 2 (Horizontal) Shadow -->
+                                    <rect x="24" y="98" width="152" height="12" rx="3" fill="url(#redSide)" transform="rotate(0 100 104)" />
+                                    <!-- Spoke 3 (Diagonal 45deg) Shadow -->
+                                    <rect x="98" y="24" width="12" height="152" rx="3" fill="url(#redSide)" transform="rotate(45 104 104)" />
+                                    <!-- Spoke 4 (Diagonal -45deg) Shadow -->
+                                    <rect x="98" y="24" width="12" height="152" rx="3" fill="url(#redSide)" transform="rotate(-45 104 104)" />
+
+                                    <!-- Front Vivid Red Spokes (Layer 2) -->
+                                    <!-- Vertical -->
+                                    <rect x="94" y="20" width="12" height="160" rx="2.5" fill="url(#redFront)" />
+                                    <!-- Horizontal -->
+                                    <rect x="20" y="94" width="160" height="12" rx="2.5" fill="url(#redFront)" />
+                                    <!-- Diagonal 45 -->
+                                    <rect x="94" y="20" width="12" height="160" rx="2.5" fill="url(#redFront)" transform="rotate(45 100 100)" />
+                                    <!-- Diagonal -45 -->
+                                    <rect x="94" y="20" width="12" height="160" rx="2.5" fill="url(#redFront)" transform="rotate(-45 100 100)" />
+                                </svg>
+                            </div>
+
+                        </div>
+
+                        <!-- Technical Annotations: Bottom of Graphic -->
+                        <div class="absolute bottom-2 left-2 text-[10px] font-mono tracking-[0.15em] text-zinc-500">
+                            &lt; BUILD. BREAK. REPEAT. /&gt;
+                        </div>
+                        <div class="absolute bottom-2 right-2 text-[10px] font-mono tracking-[0.2em] text-[#FF2A2A]">
+                            01 --
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Bottom of Hero Bar -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4 mt-8 border-t border-white/10 flex items-center justify-between text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-500">
+                <div>STUDENT LED. POSSIBILITY FUELLED.</div>
+                <div class="flex items-center gap-1.5 text-zinc-400">
+                    <span>SCROLL TO DISCOVER</span>
+                    <span>↓</span>
+                </div>
+            </div>
+
+            <!-- Full-Width Red Marquee Strip -->
+            <div class="w-full bg-[#FF2A2A] text-white py-2.5 overflow-hidden marquee-wrapper border-y border-red-600">
+                <div class="marquee-content flex items-center font-headline font-black text-xs sm:text-sm tracking-[0.15em] uppercase">
+                    <span class="mx-6">CODE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">CREATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">COLLABORATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">HACKWITHINDIA</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">MCET CHAPTER</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">CODE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">CREATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">COLLABORATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">HACKWITHINDIA</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">MCET CHAPTER</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                </div>
+                <div class="marquee-content flex items-center font-headline font-black text-xs sm:text-sm tracking-[0.15em] uppercase" aria-hidden="true">
+                    <span class="mx-6">CODE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">CREATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">COLLABORATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">HACKWITHINDIA</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">MCET CHAPTER</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">CODE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">CREATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">COLLABORATE</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">HACKWITHINDIA</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                    <span class="mx-6">MCET CHAPTER</span>
+                    <span class="mx-3 text-[10px]">✱</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION: ABOUT ================= -->
+        <section id="about" class="py-20 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-6">
+                    <div>
+                        <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-[#FF2A2A] mb-2">
+                            // 01. ABOUT THE CHAPTER
+                        </div>
+                        <h2 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight">
+                            A Campus Launchpad for Builders.
+                        </h2>
+                    </div>
+                    <p class="text-xs sm:text-sm text-zinc-400 max-w-md font-normal leading-relaxed">
+                        Hack with India — MCET Chapter is an autonomous student developer community at Methodist College of Engineering & Technology. We turn ideas into working software through code sprints, hackathons, and peer problem-solving.
+                    </p>
+                </div>
+
+                <!-- 3 Grounded Pillars -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="cyber-card p-6 sm:p-8 space-y-4">
+                        <div class="text-xs font-mono font-bold text-[#FF2A2A]">01 /</div>
+                        <h3 class="font-headline text-xl font-bold uppercase text-white">Hands-on Code Culture</h3>
+                        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
+                            We believe students learn software engineering by building real things. From API development to hardware sensor integration, members collaborate on projects that solve practical problems.
+                        </p>
+                    </div>
+
+                    <div class="cyber-card p-6 sm:p-8 space-y-4">
+                        <div class="text-xs font-mono font-bold text-[#FF2A2A]">02 /</div>
+                        <h3 class="font-headline text-xl font-bold uppercase text-white">Hackathon Infrastructure</h3>
+                        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
+                            Operating internal hackathons with physical lab desk allotments, assigned mentor reviews, transparent 100-point rubrics, and hybrid streaming for remote team members.
+                        </p>
+                    </div>
+
+                    <div class="cyber-card p-6 sm:p-8 space-y-4">
+                        <div class="text-xs font-mono font-bold text-[#FF2A2A]">03 /</div>
+                        <h3 class="font-headline text-xl font-bold uppercase text-white">Peer & Alumni Guidance</h3>
+                        <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
+                            Regular technical check-ins with senior student leads, MCET faculty advisors, and alumni engineers to review system architecture and prepare students for competitive engineering roles.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION: EVENTS & SESSIONS (Real DB Content + Empty State) ================= -->
+        <section id="events" class="py-20 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
+                    <div>
+                        <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-[#FF2A2A] mb-2">
+                            // 02. CHAPTER EVENTS & SESSIONS
+                        </div>
+                        <h2 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight">
+                            Events & Hackathon Schedule.
+                        </h2>
+                    </div>
+
+                    <!-- Category & Mode Filters -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <select id="session-filter-mode" onchange="loadSessions('All', this.value)" class="cyber-input text-xs py-1.5 px-3">
+                            <option value="All">All Formats</option>
+                            <option value="Offline">Offline on Campus</option>
+                            <option value="Hybrid">Hybrid Stream</option>
+                        </select>
+                        <button onclick="loadSessions()" class="btn-outline-dark text-xs py-1.5 px-3">
+                            Refresh
+                        </button>
+                        <a href="/events" class="btn-outline-dark text-xs py-1.5 px-3 flex items-center gap-1.5 hover:text-white hover:border-[#FF2A2A] transition-colors">
+                            <span>Explore More Events</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sessions List Container: Little Big Bar for Explore More Events -->
+                <div id="sessions-timeline" class="space-y-4">
+                    <a href="/events" class="cyber-card block p-6 sm:p-8 border-l-4 border-l-[#FF2A2A] border border-white/10 hover:border-[#FF2A2A]/60 bg-[#0C0C0F] hover:bg-[#111116] transition-all duration-300 group relative overflow-hidden shadow-xl">
+                        <div class="absolute -top-16 -right-16 w-52 h-52 rounded-full bg-[#FF2A2A]/10 blur-3xl pointer-events-none group-hover:bg-[#FF2A2A]/20 transition-all duration-500"></div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                            <div class="space-y-2 max-w-2xl">
+                                <div class="flex items-center gap-2 text-[11px] font-mono text-[#FF2A2A] tracking-[0.2em] uppercase">
+                                    <span class="w-2 h-2 rounded-full bg-[#FF2A2A] animate-pulse"></span>
+                                    <span>// 02. CHAPTER CALENDAR & SESSIONS</span>
+                                </div>
+                                <h3 class="font-headline font-extrabold text-2xl sm:text-3xl uppercase text-white tracking-tight group-hover:text-zinc-100 transition-colors">
+                                    Explore More Events & Workshops
+                                </h3>
+                                <p class="text-xs sm:text-sm text-zinc-400 font-normal leading-relaxed">
+                                    Browse our complete roster of upcoming inter-college hackathons, speaker keynotes, hands-on masterclasses, and builder sprints.
+                                </p>
+                            </div>
+                            <div class="flex-shrink-0 flex items-center">
+                                <span class="btn-red text-xs sm:text-sm py-3 px-6 sm:px-8 font-bold uppercase tracking-wider inline-flex items-center gap-2.5 shadow-lg group-hover:shadow-red-950/60 transition-all">
+                                    <span>Explore Events</span>
+                                    <span class="text-base transform group-hover:translate-x-1 transition-transform">→</span>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+
+                <!-- ================= SECTION: THE TEAM (Official Chapter Leadership Team 2026) ================= -->
+        <section id="team" class="py-20 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                
+                <!-- Section Header -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-6">
+                    <div>
+                        <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-[#FF2A2A] mb-2 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-[#FF2A2A] animate-pulse"></span>
+                            <span>// 03. CHAPTER LEADERSHIP</span>
+                        </div>
+                        <h2 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight">
+                            The People Behind the Chapter.
+                        </h2>
+                        <p class="text-xs sm:text-sm text-zinc-400 mt-2 max-w-2xl font-normal leading-relaxed">
+                            Official Chapter Leadership Team 2026 — Student builders, organizers, and functional track leads driving innovation at Methodist College of Engineering and Technology.
+                        </p>
+                    </div>
+                    <div class="text-left md:text-right flex-shrink-0">
+                        <span class="text-xs font-mono px-3 py-1.5 rounded bg-[#FF2A2A]/10 text-[#FF2A2A] border border-[#FF2A2A]/20 uppercase tracking-wider font-semibold">
+                            CYCLE 2026 APPOINTMENTS
+                        </span>
+                    </div>
+                </div>
+
+                <!-- SUBSECTION A: CORE LEADERSHIP TEAM (8 Members) -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="h-4 w-1 bg-[#FF2A2A]"></div>
+                        <h3 class="font-headline text-xl sm:text-2xl font-bold uppercase text-white tracking-tight">
+                            Core Leadership Team
+                        </h3>
+                        <span class="text-xs font-mono text-zinc-500">/ 08 Members</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- 1. President: Zaid Bin Khalid -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 01</span>
+                                <span class="text-zinc-500 uppercase">Leadership</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">President</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Zaid Bin Khalid
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Executive</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Organizer: Bhukya Vinay Kumar -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 02</span>
+                                <span class="text-zinc-500 uppercase">Leadership</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Organizer</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Bhukya Vinay Kumar
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Operations</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Co-Organizer: Likitha Mahankali -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 03</span>
+                                <span class="text-zinc-500 uppercase">Leadership</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Co-Organizer</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Likitha Mahankali
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Operations</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. Chief Coordinator: Syed Razi Hasan Razvi -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 04</span>
+                                <span class="text-zinc-500 uppercase">Coordination</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Chief Coordinator</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Syed Razi Hasan Razvi
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Execution</span>
+                            </div>
+                        </div>
+
+                        <!-- 5. Vice Chief Coordinator: Syed Nooruddin Hussaini -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 05</span>
+                                <span class="text-zinc-500 uppercase">Coordination</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Vice Chief Coordinator</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Syed Nooruddin Hussaini
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Execution</span>
+                            </div>
+                        </div>
+
+                        <!-- 6. General Secretary: Mohammed Abdul Raheem -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 06</span>
+                                <span class="text-zinc-500 uppercase">Secretariat</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">General Secretary</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Mohammed Abdul Raheem
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Governance</span>
+                            </div>
+                        </div>
+
+                        <!-- 7. Secretary: Abida Begum -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 07</span>
+                                <span class="text-zinc-500 uppercase">Secretariat</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Secretary</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Abida Begum
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Governance</span>
+                            </div>
+                        </div>
+
+                        <!-- 8. Vice Secretary: Manha Fatima -->
+                        <div class="cyber-card p-5 space-y-3 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">CORE / 08</span>
+                                <span class="text-zinc-500 uppercase">Secretariat</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Vice Secretary</div>
+                                <h4 class="font-headline font-bold text-lg text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Manha Fatima
+                                </h4>
+                            </div>
+                            <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Governance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBSECTION B: FUNCTIONAL LEADS (11 Members) -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="h-4 w-1 bg-[#FF2A2A]"></div>
+                        <h3 class="font-headline text-xl sm:text-2xl font-bold uppercase text-white tracking-tight">
+                            Functional Leads
+                        </h3>
+                        <span class="text-xs font-mono text-zinc-500">/ 13 Track Leads</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- 1. Technical Lead: Pavan Yadav -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 01</span>
+                                <span class="text-zinc-500 uppercase">Technology</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Technical Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Pavan Yadav
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Core Tech</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Vice Technical Lead: Shaik Saaduddin -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 02</span>
+                                <span class="text-zinc-500 uppercase">Technology</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Vice Technical Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Shaik Saaduddin
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Core Tech</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Development Lead: Kancharla Anand Kumar -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 03</span>
+                                <span class="text-zinc-500 uppercase">Engineering</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Development Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Kancharla Anand Kumar
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Software</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. Social Media & Content Lead: Sanda Varun Sagar -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 04</span>
+                                <span class="text-zinc-500 uppercase">Media & Content</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Social Media & Content Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Sanda Varun Sagar
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Branding</span>
+                            </div>
+                        </div>
+
+                        <!-- 5. Designing Lead: Mirza Alamdar Abbas Hussain -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 05</span>
+                                <span class="text-zinc-500 uppercase">Design & Media</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Designing Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Mirza Alamdar Abbas Hussain
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">UI & Creative</span>
+                            </div>
+                        </div>
+
+                        <!-- 6. Co-Designing Lead: Tejas A -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 06</span>
+                                <span class="text-zinc-500 uppercase">Design & Media</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Co-Designing Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Tejas A
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Creative Design</span>
+                            </div>
+                        </div>
+
+                        <!-- 7. Content Creation Lead: Mohammed Zun Nurain Khan -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 07</span>
+                                <span class="text-zinc-500 uppercase">Media & Content</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Content Creation Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Mohammed Zun Nurain Khan
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Content Strategy</span>
+                            </div>
+                        </div>
+
+                        <!-- 8. Editor: Chinthala Dimple Kumar -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 08</span>
+                                <span class="text-zinc-500 uppercase">Editorial</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Editor</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Chinthala Dimple Kumar
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Publications</span>
+                            </div>
+                        </div>
+
+                        <!-- 9. PR & Outreach Lead: Manavala Vishnu Vardhan -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 09</span>
+                                <span class="text-zinc-500 uppercase">Public Relations</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">PR & Outreach Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Manavala Vishnu Vardhan
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Outreach</span>
+                            </div>
+                        </div>
+
+                        <!-- 10. Event Management & Sponsorship Lead: Mandumula Sneha -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 10</span>
+                                <span class="text-zinc-500 uppercase">Logistics & Sponsorship</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Event Management & Sponsorship Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Mandumula Sneha
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Sponsorship</span>
+                            </div>
+                        </div>
+
+                        <!-- 11. Vice Event Management Lead: Shaik Md Aman -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 11</span>
+                                <span class="text-zinc-500 uppercase">Logistics</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Vice Event Management Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Shaik Md Aman
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Events</span>
+                            </div>
+                        </div>
+
+                        <!-- 12. Women Ambassador: M. Shanthimani -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 12</span>
+                                <span class="text-zinc-500 uppercase">Ambassador</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Women Ambassador</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    M. Shanthimani
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Diversity & Inclusivity</span>
+                            </div>
+                        </div>
+
+                        <!-- 13. Community & Membership Lead: Syed Riyaan Hussain -->
+                        <div class="cyber-card p-5 space-y-2.5 relative group hover:border-[#FF2A2A]/40 transition-all duration-300">
+                            <div class="flex items-center justify-between text-[10px] font-mono">
+                                <span class="text-[#FF2A2A] font-bold">LEAD / 13</span>
+                                <span class="text-zinc-500 uppercase">Community</span>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase text-zinc-400 tracking-wider">Community & Membership Lead</div>
+                                <h4 class="font-headline font-bold text-base text-white uppercase tracking-tight mt-0.5 group-hover:text-[#FF2A2A] transition-colors">
+                                    Syed Riyaan Hussain
+                                </h4>
+                            </div>
+                            <div class="pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>MCET Campus</span>
+                                <span class="text-zinc-600">Growth</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editorial Team Motto / Quote Card -->
+                <div class="cyber-card p-6 sm:p-8 border-l-2 border-l-[#FF2A2A] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <p class="text-sm sm:text-base font-headline font-bold text-white italic tracking-tight">
+                            “Great things are never done by one person; they are done by a team of people.”
+                        </p>
+                        <p class="text-xs font-mono text-zinc-400">
+                            HackWithIndia × MCET | Methodist College of Engineering and Technology
+                        </p>
+                    </div>
+                    <a href="/register" class="btn-red text-xs py-2 px-5 font-semibold flex-shrink-0">
+                        Join the Chapter ↗
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+
+        
+
+        <!-- ================= SECTION: DOMAINS (Explore Your Domain / Technical Stack) ================= -->
+        <section id="domains" class="py-20 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                
+                <!-- Centered Section Header Matching Reference Layout -->
+                <div class="text-center space-y-3 max-w-3xl mx-auto">
+                    <div class="text-xs font-mono uppercase tracking-[0.25em] text-[#FF2A2A] font-semibold">
+                        EXPLORE YOUR DOMAIN
+                    </div>
+                    <h2 class="font-headline text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white uppercase">
+                        Master your <span class="text-[#FF2A2A]">tech stack.</span>
+                    </h2>
+                    <p class="text-xs sm:text-sm text-zinc-400 font-normal max-w-xl mx-auto leading-relaxed">
+                        Find your specialization across four foundational technology tracks curated for the Hack with India builder community.
+                    </p>
+                </div>
+
+                <!-- 4-Card Horizontal Domain Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Card 1: AI & Autonomous Agents -->
+                    <div class="cyber-card rounded-2xl p-6 sm:p-7 space-y-3.5 transition-all duration-300 hover:border-[#FF2A2A]/50 hover:-translate-y-1 group">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] font-bold uppercase tracking-wider">
+                            DOMAIN / 01
+                        </div>
+                        <h3 class="font-headline font-bold text-lg text-white tracking-tight group-hover:text-[#FF2A2A] transition-colors">
+                            AI & Autonomous Agents
+                        </h3>
+                        <p class="text-xs text-zinc-400 font-normal leading-relaxed">
+                            Architect LLM workflows, neural pipelines, agentic orchestration, and computer vision models.
+                        </p>
+                        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                            <span>Deep Learning</span>
+                            <span class="group-hover:translate-x-1 transition-transform text-[#FF2A2A]">→</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Cloud & Distributed Systems -->
+                    <div class="cyber-card rounded-2xl p-6 sm:p-7 space-y-3.5 transition-all duration-300 hover:border-[#FF2A2A]/50 hover:-translate-y-1 group">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] font-bold uppercase tracking-wider">
+                            DOMAIN / 02
+                        </div>
+                        <h3 class="font-headline font-bold text-lg text-white tracking-tight group-hover:text-[#FF2A2A] transition-colors">
+                            Cloud & Distributed Systems
+                        </h3>
+                        <p class="text-xs text-zinc-400 font-normal leading-relaxed">
+                            Engineer resilient microservices, low-latency APIs, reactive frontends, and distributed backends.
+                        </p>
+                        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                            <span>Architecture</span>
+                            <span class="group-hover:translate-x-1 transition-transform text-[#FF2A2A]">→</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Cybersecurity & Protocols -->
+                    <div class="cyber-card rounded-2xl p-6 sm:p-7 space-y-3.5 transition-all duration-300 hover:border-[#FF2A2A]/50 hover:-translate-y-1 group">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] font-bold uppercase tracking-wider">
+                            DOMAIN / 03
+                        </div>
+                        <h3 class="font-headline font-bold text-lg text-white tracking-tight group-hover:text-[#FF2A2A] transition-colors">
+                            Cybersecurity & Protocols
+                        </h3>
+                        <p class="text-xs text-zinc-400 font-normal leading-relaxed">
+                            Harden cloud infrastructure, implement zero-trust protocols, penetration testing, and secure enclaves.
+                        </p>
+                        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                            <span>Zero-Trust</span>
+                            <span class="group-hover:translate-x-1 transition-transform text-[#FF2A2A]">→</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: IoT & Hardware Computing -->
+                    <div class="cyber-card rounded-2xl p-6 sm:p-7 space-y-3.5 transition-all duration-300 hover:border-[#FF2A2A]/50 hover:-translate-y-1 group">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] font-bold uppercase tracking-wider">
+                            DOMAIN / 04
+                        </div>
+                        <h3 class="font-headline font-bold text-lg text-white tracking-tight group-hover:text-[#FF2A2A] transition-colors">
+                            IoT & Hardware Computing
+                        </h3>
+                        <p class="text-xs text-zinc-400 font-normal leading-relaxed">
+                            Interface microcontrollers, edge sensors, telemetry pipelines, and embedded real-time robotics.
+                        </p>
+                        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                            <span>Embedded</span>
+                            <span class="group-hover:translate-x-1 transition-transform text-[#FF2A2A]">→</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION: RESOURCES ================= -->
+        <section id="resources" class="py-20 border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                
+                <div class="border-b border-white/10 pb-6">
+                    <div class="text-[11px] font-mono uppercase tracking-[0.2em] text-[#FF2A2A] mb-2">
+                        // 05. BUILDER TOOLKIT
+                    </div>
+                    <h2 class="font-headline text-3xl sm:text-5xl font-extrabold uppercase text-white tracking-tight">
+                        Verified Chapter Resources.
+                    </h2>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2 font-normal">
+                        Genuine technical guides and project infrastructure provided to participants of Hack with India @ MCET.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="cyber-card p-5 space-y-2">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] uppercase">RESOURCE / 01</div>
+                        <h4 class="font-headline font-bold text-base text-white uppercase">FastAPI Backend Starter</h4>
+                        <p class="text-xs text-zinc-400 font-normal">
+                            Production-ready Python API structure with SQLite ORM models, CORS middleware, and Jinja2 template integration.
+                        </p>
+                    </div>
+
+                    <div class="cyber-card p-5 space-y-2">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] uppercase">RESOURCE / 02</div>
+                        <h4 class="font-headline font-bold text-base text-white uppercase">Campus Wi-Fi & LAN Guide</h4>
+                        <p class="text-xs text-zinc-400 font-normal">
+                            High-speed campus network credentials for Newton Innovation Labs: SSID <code class="text-zinc-200 font-mono">HWI_MCET_5G</code> (Key: <code class="text-zinc-200 font-mono">hackwithindia2026</code>).
+                        </p>
+                    </div>
+
+                    <div class="cyber-card p-5 space-y-2">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] uppercase">RESOURCE / 03</div>
+                        <h4 class="font-headline font-bold text-base text-white uppercase">100-Pt Scoring Matrix</h4>
+                        <p class="text-xs text-zinc-400 font-normal">
+                            Standardized evaluation rubric: Innovation (25%), Technical (25%), Real Impact (20%), UI/UX (15%), Pitch & Demo (15%).
+                        </p>
+                    </div>
+
+                    <div class="cyber-card p-5 space-y-2">
+                        <div class="text-[10px] font-mono text-[#FF2A2A] uppercase">RESOURCE / 04</div>
+                        <h4 class="font-headline font-bold text-base text-white uppercase">Lab Bay Directory</h4>
+                        <p class="text-xs text-zinc-400 font-normal">
+                            Official lab desk allocation map across Newton Innovation Center, Turing Computing Lab, and Aryabhata Pods.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-[#050507] border-t border-white/10 py-12 text-zinc-500 text-xs font-mono">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
+                
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#FF2A2A]"></span>
+                        <span class="font-headline font-bold text-white text-base uppercase tracking-tight">HACK WITH INDIA</span>
+                        <span class="text-[10px] text-zinc-400">/ MCET CHAPTER</span>
+                    </div>
+                    <p class="text-[11px] text-zinc-400 mt-1">
+                        Student Led. Possibility Fuelled.
+                    </p>
+                    <p class="text-[10px] text-zinc-600 mt-0.5">
+                        Methodist College of Engineering & Technology (MCET Campus)
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-6 text-xs text-zinc-400 uppercase tracking-wider">
+                    <a href="#about" class="hover:text-white transition-colors">About</a>
+                    <a href="#events" class="hover:text-white transition-colors">Events</a>
+                    <a href="#team" class="hover:text-white transition-colors">The Team</a>
+                    <a href="#domains" class="hover:text-white transition-colors">Domains</a>
+                    <a href="#resources" class="hover:text-white transition-colors">Resources</a>
+                    <a href="/register" class="hover:text-white transition-colors text-[#FF2A2A]">Register</a>
+                    <a href="/feedback" class="hover:text-white transition-colors">Feedback</a>
+                </div>
+
+            </div>
+
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
+                <p>© 2026 Hack with India — MCET Chapter.</p>
+                <div class="flex items-center gap-4">
+                    <button onclick="replayIntro()" class="text-zinc-500 hover:text-[#FF2A2A] transition-colors font-mono text-[10px] uppercase">↺ Replay Intro</button>
+                    <p>Designed for student builders, innovators, and collegiate hackathons.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Three.js + GSAP + Application Scripts -->
+    <script src="/static/js/three.min.js"></script>
+    <script src="/static/js/gsap.min.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/animations.js"></script>
+    <script src="/static/js/intro.js"></script>
+</body>
+</html>
