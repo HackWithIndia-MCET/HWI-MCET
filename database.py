@@ -17,7 +17,7 @@ DB_PATH = os.path.join(BASE_DIR, "hwi_mcet.db")
 raw_url = os.getenv("DATABASE_URL")
 
 if raw_url:
-    # Strip any accidental whitespace, newlines, or quotes copied into Vercel
+    # Clean whitespace and accidental surrounding quotes
     clean_url = raw_url.strip().strip('"').strip("'")
     if clean_url.startswith("postgres://"):
         clean_url = clean_url.replace("postgres://", "postgresql://", 1)
@@ -25,9 +25,13 @@ if raw_url:
 else:
     DATABASE_URL = f"sqlite:///{DB_PATH}"
 
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+# Ensure SSL is enforced for PostgreSQL cloud connections (Supabase)
+connect_args = {}
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+elif "sslmode" not in DATABASE_URL:
+    connect_args = {"sslmode": "require"}
 
-# Safe Engine Initialization with graceful fallback
 try:
     engine = create_engine(
         DATABASE_URL,
