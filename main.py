@@ -25,11 +25,17 @@ import models
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
-os.makedirs(STATIC_DIR, exist_ok=True)
-os.makedirs(TEMPLATES_DIR, exist_ok=True)
+try:
+    os.makedirs(STATIC_DIR, exist_ok=True)
+    os.makedirs(TEMPLATES_DIR, exist_ok=True)
+except Exception:
+    pass
 
-# Initialize Database tables
-Base.metadata.create_all(bind=engine)
+# Initialize Database tables safely (tables already migrated in Supabase)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"[WARN] Database initialization notice: {e}")
 
 app = FastAPI(
     title="Hack With India @ MCET Campus",
