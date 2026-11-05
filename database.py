@@ -17,10 +17,12 @@ DB_PATH = os.path.join(BASE_DIR, "hwi_mcet.db")
 raw_url = os.getenv("DATABASE_URL")
 
 if raw_url:
-    # Clean whitespace and accidental surrounding quotes
     clean_url = raw_url.strip().strip('"').strip("'")
+    # Explicitly use psycopg2 driver so SQLAlchemy doesn't search for psycopg v3
     if clean_url.startswith("postgres://"):
-        clean_url = clean_url.replace("postgres://", "postgresql://", 1)
+        clean_url = clean_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif clean_url.startswith("postgresql://") and not clean_url.startswith("postgresql+"):
+        clean_url = clean_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     DATABASE_URL = clean_url
 else:
     DATABASE_URL = f"sqlite:///{DB_PATH}"
