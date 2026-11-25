@@ -88,7 +88,22 @@ def on_startup():
 
 
 
+# SEO: Robots.txt
+@app.get("/robots.txt", include_in_schema=False)
+async def robots():
+    return FileResponse(
+        os.path.join(STATIC_DIR, "robots.txt"),
+        media_type="text/plain"
+    )
 
+
+# SEO: Sitemap.xml
+@app.get("/sitemap.xml", include_in_schema=False)
+async def sitemap():
+    return FileResponse(
+        os.path.join(STATIC_DIR, "sitemap.xml"),
+        media_type="application/xml"
+    )
 # Root Favicon Route
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
